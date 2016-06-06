@@ -1,0 +1,27 @@
+{
+  "name": "images-compare",
+  "version": "0.0.1",
+  "description": "A jquery plugin for comparing two images",
+  "main": "index.js",
+  "dependencies": {
+    "jquery": "^2.2.4"
+  },
+  "devDependencies": {
+    "copy-cli": "^1.2.1",
+    "csslint": "^0.10.0",
+    "jshint": "^2.9.2",
+    "uglify-js": "^2.6.2"
+  },
+  "scripts": {
+      "lint:js": "jshint src/assets/js/*.js",
+    "copy:js": "copy ./src/assets/js/jquery.images-compare.js > ./build/jquery.images-compare.js",
+    "minify:js": "uglifyjs ./src/assets/js/jquery.images-compare.js --compress --mangle --source-map ./build/jquery.images-compare.min.map -o ./build/jquery.images-compare.min.js",
+      "lint:css": "csslint src/assets/css/*.css",
+    "copy:css": "copy ./src/assets/css/images-compare.css > ./build/images-compare.css",
+    "minify:css": "copy --minify=css ./src/assets/css/images-compare.css > ./build/images-compare.min.css",
+    "build": "",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Sylvain Combes <combes.sylvain@gmail.com>",
+  "license": "MIT"
+}

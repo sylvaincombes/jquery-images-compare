@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Image compare demo</title>
+    <link rel="stylesheet" href="../src/assets/css/images-compare.css"/>
+</head>
+<body>
+
+<div class="js-img-compare images-compare-container">
+    <div>
+        <span class="images-compare-label">Before</span>
+        <img src="assets/img/before.jpg" alt="Céline before">
+    </div>
+    <div>
+        <span class="images-compare-label">After</span>
+        <img src="assets/img/after.jpg" alt="Céline after">
+    </div>
+</div>
+
+<script type="text/javascript" src="../node_modules/jquery/dist/jquery.min.js"></script>
+<script type="text/javascript" src="../src/assets/js/jquery.images-compare.js"></script>
+<script type="text/javascript">
+    $(function () {
+        var test = $('.js-img-compare').imagesCompare();
+        test.on('change', function (event) {
+            console.log('change');
+            console.log(event);
+            if (event.ratio < 0.4) {
+                console.log('We see more than half of the back image');
+            }
+            if (event.ratio > 0.6) {
+                console.log('We see more than half of the front image');
+            }
+
+            if (event.ratio <= 0) {
+                console.log('We see completly back image');
+            }
+
+            if (event.ratio >= 1) {
+                console.log('We see completly front image');
+            }
+        });
+        test.imagesCompare.setValue(0.8);
+    });
+</script>
+</body>
+</html>
