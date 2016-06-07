@@ -17,12 +17,17 @@
         <img src="assets/img/after.jpg" alt="Céline after">
     </div>
 </div>
+<div>
+    <button class="js-front-btn">Show front image</button>
+    <button class="js-back-btn">Show back image</button>
+</div>
 
-<script type="text/javascript" src="../node_modules/jquery/dist/jquery.min.js"></script>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/hammer.js/2.0.8/hammer.min.js"></script>
 <script type="text/javascript" src="../src/assets/js/jquery.images-compare.js"></script>
 <script type="text/javascript">
     $(function () {
-        var test = $('.js-img-compare').imagesCompare();
+        var test = $('.js-img-compare').imagesCompare({click: false}).data('imagesCompare');
         test.on('change', function (event) {
             console.log('change');
             console.log(event);
@@ -41,7 +46,17 @@
                 console.log('We see completly front image');
             }
         });
-        test.imagesCompare.setValue(0.8);
+        test.setValue(0.8);
+
+        $('.js-front-btn').on('click', function(event){
+            event.preventDefault();
+            test.setValue(1);
+        });
+
+        $('.js-back-btn').on('click', function(event){
+            event.preventDefault();
+            test.setValue(0);
+        });
     });
 </script>
 </body>
