@@ -1,6 +1,6 @@
 {
   "name": "jquery-images-compare",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "description": "A jquery plugin for comparing two images",
   "keywords": [
     "jquery",
