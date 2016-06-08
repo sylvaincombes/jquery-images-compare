@@ -1,24 +1,13 @@
-/*csslint ignore:important */
-.images-compare-notransition {
-
-    -webkit-transition: none !important;
-    -moz-transition: none !important;
-    -o-transition: none !important;
-    transition: none !important;
-}
-
+/* Images compare main container */
 .images-compare-container {
     display: block;
     position: relative;
-    z-index: 3;
     overflow: hidden;
     border-radius: 5px;
 }
 
+/* Images compare front element */
 .images-compare-before {
-    transition-property: all;
-    transition-delay: 0ms;
-    transition-duration: 450ms;
     will-change: clip;
     position: absolute;
     top: 0;
@@ -28,14 +17,30 @@
     overflow: hidden;
 }
 
+/* Images compare back element */
 .images-compare-after {
-    position: absolute;
-    top: 0;
-    left: 0;
-    z-index: 1;
     pointer-events: none;
 }
 
+/* Responsive image settings */
+.images-compare-before img, .images-compare-after img {
+    max-width: 100%;
+    height: auto;
+    display: block;
+}
+
+/* Separator (thin vertical blank line) */
+.images-compare-separator {
+    position: absolute;
+    background: white;
+    height: 100%;
+    width: 1px;
+    z-index: 4;
+    left: 0;
+    top: 0;
+}
+
+/* Drag handle (circle) */
 .images-compare-handle {
     height: 38px;
     width: 38px;
@@ -51,11 +56,18 @@
     -webkit-box-shadow: 0 0 12px rgba(51, 51, 51, 0.5);
     -moz-box-shadow: 0 0 12px rgba(51, 51, 51, 0.5);
     box-shadow: 0 0 12px rgba(51, 51, 51, 0.5);
-    z-index: 40;
+    z-index: 3;
+    background: rgb(0, 0, 0);
+    background: rgba(0, 0, 0, 0.7);
     cursor: pointer;
 }
 
+/* Drag handle arrows */
 .images-compare-left-arrow, .images-compare-right-arrow {
+    width: 0;
+    height: 0;
+    border: 6px inset transparent;
+    position: absolute;
     top: 50%;
     margin-top: -6px;
 }
@@ -72,6 +84,7 @@
     margin-right: -17px;
 }
 
+/* Label */
 .images-compare-label {
     font-family: sans-serif;
     text-transform: uppercase;
@@ -79,7 +92,7 @@
     position: absolute;
     top: 10px;
     left: 10px;
-    z-index: 3;
+    z-index: 1;
     color: rgb(0, 0, 0);
     color: rgba(0, 0, 0, 0.4);
     background: rgb(255, 255, 255);

@@ -4,7 +4,11 @@
         defaults = {
             initVisibleRatio: 0.5,
             interactionMode: "drag", // "drag", "mousemove", "click"
-            precision: 2
+            animationDuration: 400, // default animation duration in ms
+            animationEasing: "swing",
+            addSeparator: true, // add a html element on the separation
+            addDragHandle: true, // add a html drag handle element on the separation
+            precision: 8
         };
 
     // Our object, using revealing module pattern
@@ -14,13 +18,33 @@
         options.roundFactor = parseInt('1' + '0'.repeat(options.precision));
 
         this._name = pluginName;
-        var frontElement, backElement, dragHandle, frontInitialCssTransitionDuration = "333ms";
+        var frontElement, backElement, separator, dragHandle, lastRatio = 1;
 
         init();
+
         function init() {
             updateDom();
             patchSize();
             initInteractions();
+
+            $(frontElement).attr('ratio', options.initVisibleRatio);
+            setVisibleRatio(options.initVisibleRatio);
+
+            // Let the world know we have done the init
+            element.trigger({
+                type: 'initialised'
+            });
+        }
+
+        function addResize() {
+            $(window).on('resize', function (event) {
+                frontElement.css('clip', '');
+                patchSize();
+                setVisibleRatio(lastRatio);
+
+                // Let the world know we have done some resize updates
+                // element.trigger(event);
+            });
         }
 
         function initInteractions() {
@@ -36,18 +60,20 @@
                         console.error('Please include the hammerjs library for drag support');
                     }
                     addDrag();
+                    addResize();
                     break;
                 case "mousemove":
                     addMouseMove();
+                    addResize();
                     break;
                 case "click":
                     addClick();
+                    addResize();
                     break;
             }
         }
 
         function addClick() {
-            console.log('click event listener');
             element.on('click', function (event) {
                 var ratio = getElementRatio(event.pageX);
                 setVisibleRatio(ratio);
@@ -80,28 +106,37 @@
                 var ratio = getElementRatio(event.srcEvent.pageX);
                 setVisibleRatio(ratio);
             });
-
-            hammertime.on('panstart', function (event) {
-                frontElement.addClass('images-compare-notransition');
-            });
-
-            hammertime.on('panend', function (event) {
-                frontElement.removeClass('images-compare-notransition');
-            });
         }
 
         function updateDom() {
             element.addClass('images-compare-container');
+            element.css('display', 'block');
 
             frontElement = element.find('> *:nth-child(1)');
             backElement = element.find('> *:nth-child(2)');
 
             frontElement.addClass("images-compare-before");
+            frontElement.css('display', 'block');
             backElement.addClass("images-compare-after");
+            backElement.css('display', 'block');
+
+            if (options.addDragHandle) {
+                buildDragHandle();
+            }
+
+            if (options.addSeparator) {
+                buildSeparator();
+            }
+        }
+
+        function buildSeparator() {
+            element.prepend("<div class='images-compare-separator'></div>");
+            separator = element.find(".images-compare-separator");
+
         }
 
         function buildDragHandle() {
-            element.append("<div class='images-compare-handle'></div>");
+            element.prepend("<div class='images-compare-handle'></div>");
             dragHandle = element.find(".images-compare-handle");
             dragHandle.append("<span class='images-compare-left-arrow'></span>");
             dragHandle.append("<span class='images-compare-right-arrow'></span>");
@@ -109,14 +144,26 @@
 
         function patchSize() {
             var imgRef = backElement.find('img').first();
-            element.width(imgRef.width());
-            element.height(imgRef.height());
+            element.css('max-width', imgRef.naturalWidth() + 'px');
+            element.css('max-height', imgRef.naturalHeight() + 'px');
+            frontElement.width(imgRef.width());
+            frontElement.height(imgRef.height());
         }
 
+        /**
+         *
+         * @param x
+         * @return float
+         */
         function getElementRatio(x) {
             return roundRatio((x - element.offset().left) / frontElement.width());
         }
 
+        /**
+         *
+         * @param ratio
+         * @return float
+         */
         function roundRatio(ratio) {
             ratio = Math.round((ratio * options.roundFactor)) / options.roundFactor;
             if (ratio > 1) {
@@ -131,40 +178,145 @@
 
         }
 
+        /**
+         * Animation request
+         *
+         * @param startValue float
+         * @param endValue float
+         * @param duration value in ms
+         * @param easing linear or swing
+         */
+        function launchAnimation(startValue, endValue, duration, easing) {
+            $(frontElement).attr('ratio', startValue).animate({ratio: startValue}, {
+                duration: 0
+            });
+
+            $(frontElement).stop().attr('ratio', startValue).animate({ratio: endValue}, {
+                duration: duration,
+                easing: easing,
+                step: function (now, fx) {
+                    var width = getRatioValue(now);
+                    lastRatio = now;
+                    frontElement.attr('ratio', now).css('clip', 'rect(0, ' + width + 'px, ' + backElement.height() + 'px, 0)');
+
+                    if (options.addSeparator) {
+                        separator.css('left', width + 'px');
+                    }
+
+                    if (options.addDragHandle) {
+                        dragHandle.css('left', width + 'px');
+                    }
+                },
+                done: function (animation, jumpedToEnd) {
+                    var ratio = $(frontElement).attr('ratio');
+                    // Let the world know something has changed
+                    element.trigger({
+                        type: 'change',
+                        ratio: ratio,
+                        value: getRatioValue(ratio),
+                        animate: true
+                    });
+                }
+            });
+        }
+
+        /**
+         * Get value to reach, based on a ratio
+         *
+         * @param ratio float
+         * @return {number}
+         */
         function getRatioValue(ratio) {
             ratio = Math.round((ratio * options.roundFactor)) / options.roundFactor;
             return Math.round(frontElement.width() * ratio);
         }
 
-        function setVisibleRatio(ratio) {
+        /**
+         * Change visible ratio
+         *
+         * @param ratio float
+         * @param animate boolean Do we want an animation ?
+         * @param duration in ms
+         * @param easing 'swing', 'linear'
+         */
+        function setVisibleRatio(ratio, animate, duration, easing) {
+            if (typeof animate == 'undefined') {
+                animate = false;
+            }
+
             var width = getRatioValue(ratio);
-            frontElement.css('clip', 'rect(0, ' + width + 'px, ' + frontElement.height() + 'px, 0)');
-            // frontElement.width(width);
-            // frontElement.removeClass('images-compare-notransition');
-            element.trigger({
-                type: 'change',
-                ratio: ratio,
-                value: width
-            });
+
+            if (animate) {
+                var finalDuration = duration ? duration : options.animationDuration;
+                var finalEasing = easing ? easing : options.animationEasing;
+
+                launchAnimation(lastRatio, ratio, finalDuration, finalEasing);
+
+                // Let the world know something has changed
+                if (lastRatio != ratio) {
+                    element.trigger({
+                        type: 'change',
+                        ratio: lastRatio,
+                        value: width,
+                        animate: animate
+                    });
+                }
+
+                return;
+
+            } else {
+                frontElement.stop().css('clip', 'rect(0, ' + width + 'px, ' + backElement.height() + 'px, 0)');
+
+                if (options.addSeparator) {
+                    $(separator).stop().css('left', width + 'px');
+                }
+
+                if (options.addDragHandle) {
+                    dragHandle.css('left', width + 'px');
+                }
+            }
+
+            // Let the world know something has changed
+            if (lastRatio != ratio) {
+                element.trigger({
+                    type: 'change',
+                    ratio: ratio,
+                    value: width,
+                    animate: animate
+                });
+            }
+
+            lastRatio = ratio;
         }
 
         // public function declaration
         // returning element to preserve chaining
         return {
-            "setValue": function (ratio) {
-                setVisibleRatio(ratio);
+            "setValue": function (ratio, animate, duration, easing) {
+                setVisibleRatio(ratio, animate, duration, easing);
                 return element;
+            },
+            "getValue": function () {
+                return lastRatio;
             },
             "on": function (eventName, callback) {
                 element.on(eventName, callback);
+                return element;
             },
             "off": function (eventName, callback) {
                 element.off(eventName, callback);
+                return element;
             }
         };
     }
 
 
+    /**
+     * Plugin declaration
+     *
+     * @param userOptions
+     * @return {*}
+     */
     $.fn.imagesCompare = function (userOptions) {
         var options = $.extend(defaults, userOptions);
         return this.each(function () {
@@ -175,3 +327,35 @@
     };
 
 })(jQuery, window, document);
+
+// http://www.jacklmoore.com/notes/naturalwidth-and-naturalheight-in-ie/
+(function ($) {
+    var props = ['Width', 'Height'], prop, propsLength;
+
+    propsLength = props.length;
+
+    for (var index = 0; index < propsLength; index++) {
+        prop = props[index];
+        /*jslint loopfunc: true */
+        (function (natural, prop) {
+            $.fn[natural] = (natural in new Image()) ?
+                function () {
+                    return this[0][natural];
+                } :
+                function () {
+                    var
+                        node = this[0],
+                        img,
+                        value;
+
+                    if (node.tagName.toLowerCase() === 'img') {
+                        img = new Image();
+                        img.src = node.src;
+                        value = img[prop];
+                    }
+                    return value;
+                };
+        }('natural' + prop, prop.toLowerCase()));
+        /*jslint loopfunc: false */
+    }
+}(jQuery));
