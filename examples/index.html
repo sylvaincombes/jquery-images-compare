@@ -3,23 +3,26 @@
 <head>
     <meta charset="UTF-8">
     <title>Image compare demo</title>
+    <link rel="stylesheet" href="assets/css/example.css"/>
     <link rel="stylesheet" href="../src/assets/css/images-compare.css"/>
 </head>
 <body>
 
-<div class="js-img-compare images-compare-container">
-    <div>
+<!-- Test 1 -->
+<div class="js-img-compare">
+    <div style="display: none;">
         <span class="images-compare-label">Before</span>
-        <img src="assets/img/before.jpg" alt="Céline before">
+        <img src="assets/img/before.jpg" alt="Before">
     </div>
     <div>
         <span class="images-compare-label">After</span>
-        <img src="assets/img/after.jpg" alt="Céline after">
+        <img src="assets/img/after.jpg" alt="After">
     </div>
 </div>
 <div>
     <button class="js-front-btn">Show front image</button>
     <button class="js-back-btn">Show back image</button>
+    <button class="js-toggle-btn">Toggle</button>
 </div>
 
 <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
@@ -27,7 +30,7 @@
 <script type="text/javascript" src="../src/assets/js/jquery.images-compare.js"></script>
 <script type="text/javascript">
     $(function () {
-        var test = $('.js-img-compare').imagesCompare({click: false}).data('imagesCompare');
+        var test = $('.js-img-compare').imagesCompare().data('imagesCompare');
         test.on('change', function (event) {
             console.log('change');
             console.log(event);
@@ -39,23 +42,31 @@
             }
 
             if (event.ratio <= 0) {
-                console.log('We see completly back image');
+                console.log('We see completely back image');
             }
 
             if (event.ratio >= 1) {
-                console.log('We see completly front image');
+                console.log('We see completely front image');
             }
         });
-        test.setValue(0.8);
 
-        $('.js-front-btn').on('click', function(event){
+        $('.js-front-btn').on('click', function (event) {
             event.preventDefault();
-            test.setValue(1);
+            test.setValue(1, true);
         });
 
-        $('.js-back-btn').on('click', function(event){
+        $('.js-back-btn').on('click', function (event) {
             event.preventDefault();
-            test.setValue(0);
+            test.setValue(0, true);
+        });
+
+        $('.js-toggle-btn').on('click', function (event) {
+            event.preventDefault();
+            if(test.getValue() >= 0 && test.getValue() < 1) {
+                test.setValue(1, true);
+            } else {
+                test.setValue(0, true);
+            }
         });
     });
 </script>
