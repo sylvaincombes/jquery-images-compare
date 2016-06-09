@@ -90,15 +90,15 @@ $('#myImageCompare').imagesCompare({
 
 List of available options :
 
-| key   	            | Description   	                                                                            | Default value   	|
-| -------------         | -------------                                                                                 | ------------- |
-| initVisibleRatio   	| Visible ratio of front element on init, float value between 0 and 1  	                        | 0.5 (front element is half visible) |
-| interactionMode       | The interaction mode to use, valid values are "drag" (recommended), "mousemove", "click"  	| "drag" |
-| addSeparator          | Add a html separator element ? (thin vertical blank line) - *boolean*                         | true |
-| addDragHandle         | Add a html "drag handle" element ? - *boolean*                                                | true |
-| animationDuration     | default animation duration in ms   	                                                        | 400 |
-| animationEasing  	    | default animation easing to use ("linear", "swing")   	                                    | "swing" |
-| precision  	        | Ratio precision, numbers after the decimal point   	                                        | 4 |
+| key                | Description                                                                                | Default value    |
+| -------------      | -------------                                                                              | ------------- |
+| initVisibleRatio   | Visible ratio of front element on init, float value between 0 and 1                        | 0.5 (front element is half visible) |
+| interactionMode    | The interaction mode to use, valid values are "drag" (recommended), "mousemove", "click"   | "drag" |
+| addSeparator       | Add a html separator element ? (thin vertical blank line) - *boolean*                      | true |
+| addDragHandle      | Add a html "drag handle" element ? - *boolean*                                             | true |
+| animationDuration  | default animation duration in ms                                                           | 400 |
+| animationEasing    | default animation easing to use ("linear", "swing")                                        | "swing" |
+| precision          | Ratio precision, numbers after the decimal point                                           | 4 |
 
 ### Changing appearance
 
@@ -108,15 +108,15 @@ The styling is done via css, to let you change it by css overrides.
 
 Basic list of main css classes, for full details please have a look at the css file.
 
-| Selector  	            | Description   	|
-| -------------             | -------------	|
-| .images-compare-container	| Container of the elements   	|
-| .images-compare-before    | Front element |
-| .images-compare-after     | Back element	|
-| .images-compare-separator | Separator (thin vertical blank line)	|
-| .images-compare-handle    | Drag handle (circle)	|
-| .images-compare-left-arrow, .images-compare-right-arrow    | Drag handle arrows	|
-| .images-compare-label     | Label class element	|
+| Selector                                                    | Description    |
+| -------------                                               | ------------- |
+| \.images-compare-container                                  | Container of the elements    |
+| \.images-compare-before                                     | Front element |
+| \.images-compare-after                                      | Back element |
+| \.images-compare-separator                                  | Separator (thin vertical blank line) |
+| \.images-compare-handle                                     | Drag handle (circle) |
+| \.images-compare-left-arrow, .images-compare-right-arrow    | Drag handle arrows |
+| \.images-compare-label                                      | Label class element |
 
 #### Markup example with labels
 
@@ -144,11 +144,11 @@ A default styling will be applied, you can override css rules to customize to yo
 
 List of events the plugin triggers :
 
-| Event name   	    | Description   	|
-| -------------     | -------------	|
-| initialised   	| This event is fired when init is done   	|
-| change            | This event is fired when the value of visible front element is changed   	|
-| resize  	        | This event is fired when a resize window event has been received and treated   	|
+| Event name        | Description   |
+| -------------     | ------------- |
+| initialised       | This event is fired when init is done |
+| change            | This event is fired when the value of visible front element is changed |
+| resize            | This event is fired when a resize window event has been received and treated |
 
 #### Example listening to change event
 
