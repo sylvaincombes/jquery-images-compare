@@ -1,9 +1,8 @@
 /* Images compare main container */
 .images-compare-container {
-    display: block;
+    display: inline-block;
     position: relative;
     overflow: hidden;
-    border-radius: 5px;
 }
 
 /* Images compare front element */

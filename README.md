@@ -84,7 +84,7 @@ List of available options :
 | interactionMode       | The interaction mode to use, valid values are "drag" (recommended), "mousemove", "click"  	| "drag" |
 | addSeparator          | Add a html separator element ? (thin vertical blank line) - *boolean*                         | true |
 | addDragHandle         | Add a html "drag handle" element ? - *boolean*                                                | true |
-| animationDuration     | default animation duration in ms   	                                                        | 1000 |
+| animationDuration     | default animation duration in ms   	                                                        | 400 |
 | animationEasing  	    | default animation easing to use ("linear", "swing")   	                                    | "swing" |
 | precision  	        | Ratio precision, numbers after the decimal point   	                                        | 4 |
 

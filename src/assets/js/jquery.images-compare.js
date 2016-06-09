@@ -8,7 +8,7 @@
             animationEasing: "swing",
             addSeparator: true, // add a html element on the separation
             addDragHandle: true, // add a html drag handle element on the separation
-            precision: 8
+            precision: 4
         };
 
     // Our object, using revealing module pattern
@@ -18,7 +18,7 @@
         options.roundFactor = parseInt('1' + '0'.repeat(options.precision));
 
         this._name = pluginName;
-        var frontElement, backElement, separator, dragHandle, lastRatio = 1;
+        var frontElement, backElement, separator, dragHandle, lastRatio = 1, size = {width: 0, height: 0, maxWidth: 0, maxHeight: 0};
 
         init();
 
@@ -110,7 +110,7 @@
 
         function updateDom() {
             element.addClass('images-compare-container');
-            element.css('display', 'block');
+            element.css('display', 'inline-block');
 
             frontElement = element.find('> *:nth-child(1)');
             backElement = element.find('> *:nth-child(2)');
@@ -144,10 +144,11 @@
 
         function patchSize() {
             var imgRef = backElement.find('img').first();
-            element.css('max-width', imgRef.naturalWidth() + 'px');
-            element.css('max-height', imgRef.naturalHeight() + 'px');
-            frontElement.width(imgRef.width());
-            frontElement.height(imgRef.height());
+            setSize(imgRef.width(), imgRef.height(), imgRef.naturalWidth(), imgRef.naturalHeight());
+            element.css('max-width', size.maxWidth + 'px');
+            element.css('max-height', size.maxHeight + 'px');
+            frontElement.width(size.width);
+            frontElement.height(size.height);
         }
 
         /**
@@ -197,7 +198,7 @@
                 step: function (now, fx) {
                     var width = getRatioValue(now);
                     lastRatio = now;
-                    frontElement.attr('ratio', now).css('clip', 'rect(0, ' + width + 'px, ' + backElement.height() + 'px, 0)');
+                    frontElement.attr('ratio', now).css('clip', 'rect(0, ' + width + 'px, ' + size.height + 'px, 0)');
 
                     if (options.addSeparator) {
                         separator.css('left', width + 'px');
@@ -265,7 +266,7 @@
                 return;
 
             } else {
-                frontElement.stop().css('clip', 'rect(0, ' + width + 'px, ' + backElement.height() + 'px, 0)');
+                frontElement.stop().css('clip', 'rect(0, ' + width + 'px, ' + size.height + 'px, 0)');
 
                 if (options.addSeparator) {
                     $(separator).stop().css('left', width + 'px');
@@ -287,6 +288,42 @@
             }
 
             lastRatio = ratio;
+        }
+
+        function setSize(width, height, maxWidth, maxHeight) {
+            if (typeof width != 'undefined') {
+                setWidth(width);
+            }
+            if (typeof height != 'undefined') {
+                setHeight(height);
+            }
+            if (typeof maxWidth != 'undefined') {
+                setMaxWidth(maxWidth);
+            }
+            if (typeof maxHeight != 'undefined') {
+                setMaxHeight(maxHeight);
+            }
+            return size;
+        }
+
+        function setWidth(width) {
+            size.width = width;
+            return size;
+        }
+
+        function setMaxWidth(maxWidth) {
+            size.maxWidth = maxWidth;
+            return size;
+        }
+
+        function setHeight(height) {
+            size.height = height;
+            return size;
+        }
+
+        function setMaxHeight(maxHeight) {
+            size.maxHeight = maxHeight;
+            return size;
         }
 
         // public function declaration

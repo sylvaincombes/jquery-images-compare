@@ -2,28 +2,39 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Image compare demo</title>
+    <title>jQuery Image compare</title>
     <link rel="stylesheet" href="assets/css/example.css"/>
     <link rel="stylesheet" href="../src/assets/css/images-compare.css"/>
 </head>
 <body>
 
-<!-- Test 1 -->
-<div class="js-img-compare">
-    <div style="display: none;">
-        <span class="images-compare-label">Before</span>
-        <img src="assets/img/before.jpg" alt="Before">
+<div class="page-container">
+    <h1>jQuery Image compare</h1>
+    <h2>Example</h2>
+
+    <!-- Test 1 -->
+    <div class="js-img-compare">
+        <div style="display: none;">
+            <span class="images-compare-label">Before</span>
+            <img src="assets/img/01-celine-skowron-before.jpg" alt="Before">
+        </div>
+        <div>
+            <span class="images-compare-label">After</span>
+            <img src="assets/img/01-celine-skowron-after.jpg" alt="After">
+        </div>
     </div>
     <div>
-        <span class="images-compare-label">After</span>
-        <img src="assets/img/after.jpg" alt="After">
+        <button class="js-front-btn">Show front image</button>
+        <button class="js-back-btn">Show back image</button>
+        <button class="js-toggle-btn">Toggle</button>
     </div>
+
+    <footer>
+        Image credits : <a href="http://celine-skowron.fr">Céline Skowron</a>
+    </footer>
+
 </div>
-<div>
-    <button class="js-front-btn">Show front image</button>
-    <button class="js-back-btn">Show back image</button>
-    <button class="js-toggle-btn">Toggle</button>
-</div>
+
 
 <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
 <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/hammer.js/2.0.8/hammer.min.js"></script>
@@ -62,7 +73,7 @@
 
         $('.js-toggle-btn').on('click', function (event) {
             event.preventDefault();
-            if(test.getValue() >= 0 && test.getValue() < 1) {
+            if (test.getValue() >= 0 && test.getValue() < 1) {
                 test.setValue(1, true);
             } else {
                 test.setValue(0, true);

@@ -1,5 +1,61 @@
-.content {
+* {
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: "Helvetica Neue Light", "HelveticaNeue-Light", "Helvetica Neue", Calibri, Helvetica, Arial, sans-serif;
+    background: darkgrey;
+}
+
+.page-container {
     max-width: 1024px;
-    margin: 10px auto;
+    margin: 0 auto;
     text-align: center;
+    border-left: 1px solid #EFEFEF;
+    border-right: 1px solid #EFEFEF;
+    padding: 15px;
+    background: white;
+}
+
+h2 {
+    margin-bottom: 15px;
+}
+
+button {
+    -webkit-box-sizing: content-box;
+    -moz-box-sizing: content-box;
+    box-sizing: content-box;
+    background: none;
+    color: cornflowerblue;
+    /* cursor: default; */
+    font: inherit;
+    line-height: normal;
+    overflow: visible;
+    -webkit-appearance: button; /* for input */
+    -webkit-user-select: none; /* for button */
+    -moz-user-select: none;
+    -ms-user-select: none;
+    padding: 10px;
+    border: 1px solid cornflowerblue;
+    cursor: pointer;
+    margin-top: 10px;
+}
+
+button:hover {
+    background: cornflowerblue;
+    color: white;
+}
+
+button::-moz-focus-inner {
+    border: 0;
+    padding: 0;
+}
+
+footer {
+    padding: 30px 15px 15px 15px;
+}
+
+a {
+    color: cornflowerblue;
 }
