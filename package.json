@@ -1,6 +1,6 @@
 {
   "name": "jquery-images-compare",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "A jquery plugin for comparing two images",
   "keywords": [
     "jquery",
@@ -12,6 +12,13 @@
     "after"
   ],
   "main": "build/jquery.images-compare.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/sylvaincombes/jquery-images-compare.git"
+  },
+  "bugs": {
+    "url": "https://github.com/sylvaincombes/jquery-images-compare/issues"
+  },
   "dependencies": {
     "hammerjs": "^2.0.8",
     "jquery": "^2.2.4"

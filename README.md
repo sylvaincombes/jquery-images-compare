@@ -64,6 +64,14 @@ $('#myImageCompare').imagesCompare();
 
 ## Documentation
 
+### Install via npm
+
+You can get the project via npm too :
+
+```sh
+npm install jquery-images-compare
+```
+
 ### Plugin settings
 
 You can change plugin settings by passing an option object, example :
@@ -195,7 +203,28 @@ test.setValue(0, true);
 // test.setValue(ratio, animate, duration, easing);
 ```
 
+### Contribute
 
+Clone the repository, then launch an :
+
+```sh
+npm install
+```
+
+To lint js and css use :
+
+```sh
+npm run lint
+```
+
+
+To build use :
+
+```sh
+npm run build
+```
+
+*Too look available scripts look at the scripts part in the package.json file*
 
 ## Contributors
 - [@sylvaincombes](https://github.com/sylvaincombes) (Maintainer)
