@@ -2,6 +2,8 @@
 
 A jquery plugin for comparing two images
 
+![jquery images compare preview](preview.gif)
+
 ## Features
 
 - compatibility : ie9+
@@ -19,6 +21,8 @@ A jquery plugin for comparing two images
 - Animation option when changing the value
 
 - Optional alternative interaction modes : drag by default (the recommended one), click and mousemove (warning desktop friendly only for this settings)
+
+> NB : This library only does horizontal slide
 
 ## Quick start
 
@@ -208,9 +212,16 @@ test.setValue(0, true);
 
 #### Code snippets
 - [naturalWidth and naturalHeight polyfill](http://www.jacklmoore.com/notes/naturalwidth-and-naturalheight-in-ie/)
+- Drag Handle look and feel taken from [zurb twentytwenty](https://github.com/zurb/twentytwenty)
 
 ### Images in examples
 Images used in example are kindly provided by [Céline Skowron](http://celine-skowron.fr), all rights belong to her so you can't use them anywhere without contacting her.
 
 ## License
 Released under the MIT license.
+
+## Other libraries on the same subject
+
+- [zurb twentytwenty](https://github.com/zurb/twentytwenty)
+- [jquery-beforeafter-plugin](http://www.catchmyfame.com/catchmyfame-jquery-plugins/jquery-beforeafter-plugin/)
+- [juxtapose](https://juxtapose.knightlab.com/)
