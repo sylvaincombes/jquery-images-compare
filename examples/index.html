@@ -24,9 +24,9 @@
         </div>
     </div>
     <div>
-        <button class="js-front-btn">Show front image</button>
-        <button class="js-back-btn">Show back image</button>
-        <button class="js-toggle-btn">Toggle</button>
+        <button class="btn js-front-btn">Show front image</button>
+        <button class="btn js-back-btn">Show back image</button>
+        <button class="btn js-toggle-btn">Toggle</button>
     </div>
 
     <footer>
@@ -41,10 +41,13 @@
 <script type="text/javascript" src="../src/assets/js/jquery.images-compare.js"></script>
 <script type="text/javascript">
     $(function () {
-        var test = $('.js-img-compare').imagesCompare().data('imagesCompare');
-        test.on('change', function (event) {
-            console.log('change');
-            console.log(event);
+        var imagesCompareElement = $('.js-img-compare').imagesCompare();
+        var imagesCompare = imagesCompareElement.data('imagesCompare');
+        var events = imagesCompare.events();
+
+        imagesCompare.on(events.changed, function (event) {
+            console.log(events.changed);
+            console.log(event.ratio);
             if (event.ratio < 0.4) {
                 console.log('We see more than half of the back image');
             }
@@ -63,20 +66,20 @@
 
         $('.js-front-btn').on('click', function (event) {
             event.preventDefault();
-            test.setValue(1, true);
+            imagesCompare.setValue(1, true);
         });
 
         $('.js-back-btn').on('click', function (event) {
             event.preventDefault();
-            test.setValue(0, true);
+            imagesCompare.setValue(0, true);
         });
 
         $('.js-toggle-btn').on('click', function (event) {
             event.preventDefault();
-            if (test.getValue() >= 0 && test.getValue() < 1) {
-                test.setValue(1, true);
+            if (imagesCompare.getValue() >= 0 && imagesCompare.getValue() < 1) {
+                imagesCompare.setValue(1, true);
             } else {
-                test.setValue(0, true);
+                imagesCompare.setValue(0, true);
             }
         });
     });

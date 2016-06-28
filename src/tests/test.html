@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width">
+    <title>QUnit Example</title>
+    <link rel="stylesheet" href="../../examples/assets/css/example.css"/>
+    <link rel="stylesheet" href="../assets/css/images-compare.css"/>
+    <link rel="stylesheet" href="https://code.jquery.com/qunit/qunit-2.0.0.css">
+</head>
+<body>
+<div id="qunit"></div>
+<div id="qunit-fixture"></div>
+
+<div class="page-container">
+    <h1>jQuery Image compare</h1>
+    <h2>Example</h2>
+
+    <!-- Test 1 -->
+    <div class="js-img-compare">
+        <div style="display: none;">
+            <span class="images-compare-label">Before</span>
+            <img src="../../examples/assets/img/01-celine-skowron-before.jpg" alt="Before">
+        </div>
+        <div>
+            <span class="images-compare-label">After</span>
+            <img src="../../examples/assets/img/01-celine-skowron-after.jpg" alt="After">
+        </div>
+    </div>
+    <div>
+        <button class="btn js-front-btn">Show front image</button>
+        <button class="btn js-back-btn">Show back image</button>
+        <button class="btn js-toggle-btn">Toggle</button>
+    </div>
+
+    <footer>
+        Image credits : <a href="http://celine-skowron.fr">Céline Skowron</a>
+    </footer>
+
+</div>
+
+<script src="https://code.jquery.com/qunit/qunit-2.0.0.js"></script>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/hammer.js/2.0.8/hammer.min.js"></script>
+<script type="text/javascript" src="../assets/js/jquery.images-compare.js"></script>
+<script type="text/javascript">
+    $(function () {
+        var imagesCompareElement = $('.js-img-compare').imagesCompare();
+        var imagesCompare = imagesCompareElement.data('imagesCompare');
+        var events = imagesCompare.events();
+
+        // CHANGE EVENT TESTS AND
+        // GETTER SETTER TESTS
+        function testElementChangeEvent(event) {
+            QUnit.test("test change event listener", function (assert) {
+                assert.equal(event.ratio, 1, 'Change event received and value equal 1');
+            });
+        }
+
+        function testChangeEvent(event) {
+            QUnit.test("test change event listener", function (assert) {
+                assert.equal(event.ratio, 0, 'Change event received and value equal 0');
+            });
+        }
+
+        // Async tests
+        QUnit.test("Change event tests and getter setter tests", function (assert) {
+            var numCalls = 3;
+            assert.expect(numCalls);
+            var done = assert.async(numCalls);
+
+            // change value 1 and listen to element
+            setTimeout(function () {
+                imagesCompareElement.on(events.changed, testElementChangeEvent);
+                imagesCompare.setValue(1);
+                assert.equal(imagesCompare.getValue(), 1, "test get and set value from outside : Changed value success (1)");
+                done();
+            }, 60);
+
+            // change value 0 and listen to "data" object
+            setTimeout(function () {
+                imagesCompareElement.off(events.changed, testElementChangeEvent);
+                imagesCompare.on(events.changed, testChangeEvent);
+                imagesCompare.setValue(0);
+                assert.equal(imagesCompare.getValue(), 0, "test get and set value from outside : Changed value success (0)");
+                done();
+            }, 120);
+
+            setTimeout(function () {
+                assert.ok(true, 'test get and set value from outside and event completed');
+                imagesCompare.off(events.changed, testChangeEvent);
+                done();
+            }, 180);
+        });
+
+        // RESIZE EVENT TEST
+        function testResizeEvent(event) {
+            QUnit.test("test resize event", function (assert) {
+                assert.ok(true, 'Resize event received');
+            });
+        }
+
+        imagesCompareElement.on(events.resized, testResizeEvent);
+        $(window).trigger('resize');
+        imagesCompareElement.off(events.resized, testResizeEvent);
+
+        imagesCompare.on(events.resized, testResizeEvent);
+        $(window).trigger('resize');
+        imagesCompare.off(events.resized, testResizeEvent);
+    });
+</script>
+</body>
+</html>

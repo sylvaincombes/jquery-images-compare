@@ -146,9 +146,9 @@ List of events the plugin triggers :
 
 | Event name        | Description   |
 | -------------     | ------------- |
-| initialised       | This event is fired when init is done |
-| change            | This event is fired when the value of visible front element is changed |
-| resize            | This event is fired when a resize window event has been received and treated |
+| imagesCompare:initialised       | This event is fired when init is done |
+| imagesCompare:changed           | This event is fired when the value of visible front element is changed |
+| imagesCompare:resized           | This event is fired when a resize window event has been received and treated |
 
 #### Example listening to change event
 
