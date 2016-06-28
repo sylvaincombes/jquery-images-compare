@@ -156,7 +156,7 @@ List of events the plugin triggers :
 // important call data('imagesCompare') to get the real object and not the jquery one
 var test = $('#myImageCompare').imagesCompare().data('imagesCompare');
 
-test.on('change', function (event) {
+test.on('imagesCompare:changed', function (event) {
     console.log('change');
     console.log(event);
     if (event.ratio < 0.4) {
@@ -223,6 +223,14 @@ To build use :
 ```sh
 npm run build
 ```
+
+To test use :
+
+```sh
+npm test
+```
+
+(You can open the file src/tests/test.html in your browser too)
 
 *Too look available scripts look at the scripts part in the package.json file*
 

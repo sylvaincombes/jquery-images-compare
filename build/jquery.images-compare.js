@@ -1,4 +1,13 @@
 ;(function ($, window, document, undefined) {
+    "use strict";
+
+    // String repeat polyfill
+    if (!String.prototype.repeat) {
+        String.prototype.repeat = function (n) {
+            n = n || 1;
+            return new Array(n + 1).join(this);
+        };
+    }
 
     var pluginName = 'imagesCompare',
         defaults = {
@@ -18,7 +27,17 @@
         options.roundFactor = parseInt('1' + '0'.repeat(options.precision));
 
         this._name = pluginName;
-        var frontElement, backElement, separator, dragHandle, lastRatio = 1, size = {width: 0, height: 0, maxWidth: 0, maxHeight: 0};
+
+        var frontElement, backElement, separator, dragHandle, lastRatio = 1, size = {
+            width: 0,
+            height: 0,
+            maxWidth: 0,
+            maxHeight: 0
+        }, events = {
+            initialised: "imagesCompare:initialised",
+            changed: "imagesCompare:changed",
+            resized: "imagesCompare:resized"
+        };
 
         init();
 
@@ -32,7 +51,7 @@
 
             // Let the world know we have done the init
             element.trigger({
-                type: 'initialised'
+                type: events.initialised
             });
         }
 
@@ -43,7 +62,7 @@
                 setVisibleRatio(lastRatio);
 
                 // Let the world know we have done some resize updates
-                // element.trigger(event);
+                element.trigger(events.resized);
             });
         }
 
@@ -212,7 +231,7 @@
                     var ratio = $(frontElement).attr('ratio');
                     // Let the world know something has changed
                     element.trigger({
-                        type: 'change',
+                        type: events.changed,
                         ratio: ratio,
                         value: getRatioValue(ratio),
                         animate: true
@@ -256,7 +275,7 @@
                 // Let the world know something has changed
                 if (lastRatio != ratio) {
                     element.trigger({
-                        type: 'change',
+                        type: events.changed,
                         ratio: lastRatio,
                         value: width,
                         animate: animate
@@ -280,7 +299,7 @@
             // Let the world know something has changed
             if (lastRatio != ratio) {
                 element.trigger({
-                    type: 'change',
+                    type: events.changed,
                     ratio: ratio,
                     value: width,
                     animate: animate
@@ -343,6 +362,9 @@
             "off": function (eventName, callback) {
                 element.off(eventName, callback);
                 return element;
+            },
+            "events": function () {
+                return events;
             }
         };
     }

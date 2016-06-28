@@ -6,7 +6,7 @@
         String.prototype.repeat = function (n) {
             n = n || 1;
             return new Array(n + 1).join(this);
-        }
+        };
     }
 
     var pluginName = 'imagesCompare',
