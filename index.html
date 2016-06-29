@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <meta charset="UTF-8">
+    <title>jQuery Images Compare by sylvaincombes</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" type="text/css" href="stylesheets/normalize.css" media="screen">
+    <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,700' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen">
+    <link rel="stylesheet" type="text/css" href="stylesheets/github-light.css" media="screen">
+  </head>
+  <body>
+    <section class="page-header">
+      <h1 class="project-name">jQuery Images Compare</h1>
+      <h2 class="project-tagline">A jQuery plugin for comparing two images</h2>
+      <a href="https://github.com/sylvaincombes/jquery-images-compare" class="btn">View on GitHub</a>
+      <a href="https://github.com/sylvaincombes/jquery-images-compare/zipball/master" class="btn">Download .zip</a>
+      <a href="https://github.com/sylvaincombes/jquery-images-compare/tarball/master" class="btn">Download .tar.gz</a>
+    </section>
+
+    <section class="main-content">
+      <h1>
+<a id="jquery-images-compare" class="anchor" href="#jquery-images-compare" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>jQuery Images Compare</h1>
+
+<p>A jQuery plugin for comparing two images</p>
+
+<p><img src="https://github.com/sylvaincombes/jquery-images-compare/raw/master/preview.gif" alt="jquery images compare preview"></p>
+
+<h2>
+<a id="features" class="anchor" href="#features" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Features</h2>
+
+<ul>
+<li><p>compatibility : ie9+</p></li>
+<li><p>Effort to put appearance via css (easier to skin / override)</p></li>
+<li><p>Touch friendly, mouse drag, with a big thanks to <a href="http://hammerjs.github.io/">Hammerjs</a> :)</p></li>
+<li><p>Responsive</p></li>
+<li><p>You can listen to change event to add some of your logic</p></li>
+<li><p>You can change the value from external code</p></li>
+<li><p>Animation option when changing the value</p></li>
+<li><p>Optional alternative interaction modes : drag by default (the recommended one), click and mousemove (warning desktop friendly only for this settings)</p></li>
+</ul>
+
+<blockquote>
+<p>NB : This library only does horizontal slide</p>
+</blockquote>
+
+<h2>
+<a id="quick-start" class="anchor" href="#quick-start" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Quick start</h2>
+
+<p>In your head section, include the css (a minified version is also provided) :</p>
+
+<div class="highlight highlight-text-html-basic"><pre>&lt;<span class="pl-ent">link</span> <span class="pl-e">rel</span>=<span class="pl-s"><span class="pl-pds">"</span>stylesheet<span class="pl-pds">"</span></span> <span class="pl-e">href</span>=<span class="pl-s"><span class="pl-pds">"</span>images-compare.css<span class="pl-pds">"</span></span>&gt;</pre></div>
+
+<p>Include the required javascript, before the body closing tag :</p>
+
+<div class="highlight highlight-text-html-basic"><pre>&lt;<span class="pl-ent">script</span> <span class="pl-e">type</span>=<span class="pl-s"><span class="pl-pds">"</span>text/javascript<span class="pl-pds">"</span></span> <span class="pl-e">src</span>=<span class="pl-s"><span class="pl-pds">"</span>https://cdnjs.cloudflare.com/ajax/libs/jquery/2.2.4/jquery.min.js<span class="pl-pds">"</span></span>&gt;&lt;/<span class="pl-ent">script</span>&gt;
+&lt;<span class="pl-ent">script</span> <span class="pl-e">type</span>=<span class="pl-s"><span class="pl-pds">"</span>text/javascript<span class="pl-pds">"</span></span> <span class="pl-e">src</span>=<span class="pl-s"><span class="pl-pds">"</span>https://cdnjs.cloudflare.com/ajax/libs/hammer.js/2.0.8/hammer.min.js<span class="pl-pds">"</span></span>&gt;&lt;/<span class="pl-ent">script</span>&gt;
+&lt;<span class="pl-ent">script</span> <span class="pl-e">type</span>=<span class="pl-s"><span class="pl-pds">"</span>text/javascript<span class="pl-pds">"</span></span> <span class="pl-e">src</span>=<span class="pl-s"><span class="pl-pds">"</span>jquery.images-compare.min.js<span class="pl-pds">"</span></span>&gt;&lt;/<span class="pl-ent">script</span>&gt;</pre></div>
+
+<p>Setup your html (minimal example) :</p>
+
+<div class="highlight highlight-text-html-basic"><pre><span class="pl-c">&lt;!-- Main div container --&gt;</span>
+&lt;<span class="pl-ent">div</span> <span class="pl-e">id</span>=<span class="pl-s"><span class="pl-pds">"</span>myImageCompare<span class="pl-pds">"</span></span>&gt;
+    <span class="pl-c">&lt;!-- The first div will be the front element, to prevent FOUC add a style="display: none;" --&gt;</span>
+    &lt;<span class="pl-ent">div</span> <span class="pl-e">style</span>=<span class="pl-s"><span class="pl-pds">"</span>display: none;<span class="pl-pds">"</span></span>&gt;
+        &lt;<span class="pl-ent">img</span> <span class="pl-e">src</span>=<span class="pl-s"><span class="pl-pds">"</span>assets/img/before.jpg<span class="pl-pds">"</span></span> <span class="pl-e">alt</span>=<span class="pl-s"><span class="pl-pds">"</span>Before<span class="pl-pds">"</span></span>&gt;
+    &lt;/<span class="pl-ent">div</span>&gt;
+    <span class="pl-c">&lt;!-- This div will be the back element --&gt;</span>
+    &lt;<span class="pl-ent">div</span>&gt;
+        &lt;<span class="pl-ent">img</span> <span class="pl-e">src</span>=<span class="pl-s"><span class="pl-pds">"</span>assets/img/after.jpg<span class="pl-pds">"</span></span> <span class="pl-e">alt</span>=<span class="pl-s"><span class="pl-pds">"</span>After<span class="pl-pds">"</span></span>&gt;
+    &lt;/<span class="pl-ent">div</span>&gt;
+&lt;/<span class="pl-ent">div</span>&gt;</pre></div>
+
+<p>Call the plugin :</p>
+
+<div class="highlight highlight-source-js"><pre><span class="pl-en">$</span>(<span class="pl-s"><span class="pl-pds">'</span>#myImageCompare<span class="pl-pds">'</span></span>).<span class="pl-en">imagesCompare</span>();</pre></div>
+
+<h2>
+<a id="documentation" class="anchor" href="#documentation" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Documentation</h2>
+
+<h3>
+<a id="install-via-npm" class="anchor" href="#install-via-npm" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Install via npm</h3>
+
+<p>You can get the project via npm too :</p>
+
+<div class="highlight highlight-source-shell"><pre>npm install jquery-images-compare</pre></div>
+
+<h3>
+<a id="plugin-settings" class="anchor" href="#plugin-settings" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Plugin settings</h3>
+
+<p>You can change plugin settings by passing an option object, example :</p>
+
+<div class="highlight highlight-source-js"><pre><span class="pl-en">$</span>(<span class="pl-s"><span class="pl-pds">'</span>#myImageCompare<span class="pl-pds">'</span></span>).<span class="pl-en">imagesCompare</span>({
+    initVisibleRatio<span class="pl-k">:</span> <span class="pl-c1">0.2</span>,
+    interactionMode<span class="pl-k">:</span> <span class="pl-s"><span class="pl-pds">"</span>mousemove<span class="pl-pds">"</span></span>,
+    addSeparator<span class="pl-k">:</span> <span class="pl-c1">false</span>,
+    addDragHandle<span class="pl-k">:</span> <span class="pl-c1">false</span>,
+    animationDuration<span class="pl-k">:</span> <span class="pl-c1">450</span>,
+    animationEasing<span class="pl-k">:</span> <span class="pl-s"><span class="pl-pds">"</span>linear<span class="pl-pds">"</span></span>,
+    precision<span class="pl-k">:</span> <span class="pl-c1">2</span>
+});</pre></div>
+
+<p>List of available options :</p>
+
+<table>
+<thead>
+<tr>
+<th>key</th>
+<th>Description</th>
+<th>Default value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>initVisibleRatio</td>
+<td>Visible ratio of front element on init, float value between 0 and 1</td>
+<td>0.5 (front element is half visible)</td>
+</tr>
+<tr>
+<td>interactionMode</td>
+<td>The interaction mode to use, valid values are "drag" (recommended), "mousemove", "click"</td>
+<td>"drag"</td>
+</tr>
+<tr>
+<td>addSeparator</td>
+<td>Add a html separator element ? (thin vertical blank line) - <em>boolean</em>
+</td>
+<td>true</td>
+</tr>
+<tr>
+<td>addDragHandle</td>
+<td>Add a html "drag handle" element ? - <em>boolean</em>
+</td>
+<td>true</td>
+</tr>
+<tr>
+<td>animationDuration</td>
+<td>default animation duration in ms</td>
+<td>400</td>
+</tr>
+<tr>
+<td>animationEasing</td>
+<td>default animation easing to use ("linear", "swing")</td>
+<td>"swing"</td>
+</tr>
+<tr>
+<td>precision</td>
+<td>Ratio precision, numbers after the decimal point</td>
+<td>4</td>
+</tr>
+</tbody>
+</table>
+
+<h3>
+<a id="changing-appearance" class="anchor" href="#changing-appearance" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Changing appearance</h3>
+
+<p>The styling is done via css, to let you change it by css overrides.</p>
+
+<h4>
+<a id="css-classes" class="anchor" href="#css-classes" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Css classes</h4>
+
+<p>Basic list of main css classes, for full details please have a look at the css file.</p>
+
+<table>
+<thead>
+<tr>
+<th>Selector</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>.images-compare-container</td>
+<td>Container of the elements</td>
+</tr>
+<tr>
+<td>.images-compare-before</td>
+<td>Front element</td>
+</tr>
+<tr>
+<td>.images-compare-after</td>
+<td>Back element</td>
+</tr>
+<tr>
+<td>.images-compare-separator</td>
+<td>Separator (thin vertical blank line)</td>
+</tr>
+<tr>
+<td>.images-compare-handle</td>
+<td>Drag handle (circle)</td>
+</tr>
+<tr>
+<td>.images-compare-left-arrow, .images-compare-right-arrow</td>
+<td>Drag handle arrows</td>
+</tr>
+<tr>
+<td>.images-compare-label</td>
+<td>Label class element</td>
+</tr>
+</tbody>
+</table>
+
+<h4>
+<a id="markup-example-with-labels" class="anchor" href="#markup-example-with-labels" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Markup example with labels</h4>
+
+<p>You can add labels, add the class <em>images-compare-label</em> to your elements.</p>
+
+<p>A default styling will be applied, you can override css rules to customize to your needs.</p>
+
+<div class="highlight highlight-text-html-basic"><pre><span class="pl-c">&lt;!-- Main div container --&gt;</span>
+&lt;<span class="pl-ent">div</span> <span class="pl-e">id</span>=<span class="pl-s"><span class="pl-pds">"</span>myImageCompare<span class="pl-pds">"</span></span>&gt;
+    <span class="pl-c">&lt;!-- The first div will be the front element, to prevent FOUC add a style="display: none;" --&gt;</span>
+    &lt;<span class="pl-ent">div</span> <span class="pl-e">style</span>=<span class="pl-s"><span class="pl-pds">"</span>display: none;<span class="pl-pds">"</span></span>&gt;
+        &lt;<span class="pl-ent">span</span> <span class="pl-e">class</span>=<span class="pl-s"><span class="pl-pds">"</span>images-compare-label<span class="pl-pds">"</span></span>&gt;Before&lt;/<span class="pl-ent">span</span>&gt;
+        &lt;<span class="pl-ent">img</span> <span class="pl-e">src</span>=<span class="pl-s"><span class="pl-pds">"</span>assets/img/before.jpg<span class="pl-pds">"</span></span> <span class="pl-e">alt</span>=<span class="pl-s"><span class="pl-pds">"</span>Before<span class="pl-pds">"</span></span>&gt;
+    &lt;/<span class="pl-ent">div</span>&gt;
+    <span class="pl-c">&lt;!-- This div will be the back element --&gt;</span>
+    &lt;<span class="pl-ent">div</span>&gt;
+        &lt;<span class="pl-ent">span</span> <span class="pl-e">class</span>=<span class="pl-s"><span class="pl-pds">"</span>images-compare-label<span class="pl-pds">"</span></span>&gt;After&lt;/<span class="pl-ent">span</span>&gt;
+        &lt;<span class="pl-ent">img</span> <span class="pl-e">src</span>=<span class="pl-s"><span class="pl-pds">"</span>assets/img/after.jpg<span class="pl-pds">"</span></span> <span class="pl-e">alt</span>=<span class="pl-s"><span class="pl-pds">"</span>After<span class="pl-pds">"</span></span>&gt;
+    &lt;/<span class="pl-ent">div</span>&gt;
+&lt;/<span class="pl-ent">div</span>&gt;</pre></div>
+
+<h3>
+<a id="events" class="anchor" href="#events" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Events</h3>
+
+<p>List of events the plugin triggers :</p>
+
+<table>
+<thead>
+<tr>
+<th>Event name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>imagesCompare:initialised</td>
+<td>This event is fired when init is done</td>
+</tr>
+<tr>
+<td>imagesCompare:changed</td>
+<td>This event is fired when the value of visible front element is changed</td>
+</tr>
+<tr>
+<td>imagesCompare:resized</td>
+<td>This event is fired when a resize window event has been received and treated</td>
+</tr>
+</tbody>
+</table>
+
+<h4>
+<a id="example-listening-to-change-event" class="anchor" href="#example-listening-to-change-event" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Example listening to change event</h4>
+
+<div class="highlight highlight-source-js"><pre><span class="pl-c">// important call data('imagesCompare') to get the real object and not the jquery one</span>
+<span class="pl-k">var</span> test <span class="pl-k">=</span> <span class="pl-en">$</span>(<span class="pl-s"><span class="pl-pds">'</span>#myImageCompare<span class="pl-pds">'</span></span>).<span class="pl-en">imagesCompare</span>().<span class="pl-c1">data</span>(<span class="pl-s"><span class="pl-pds">'</span>imagesCompare<span class="pl-pds">'</span></span>);
+
+<span class="pl-smi">test</span>.<span class="pl-en">on</span>(<span class="pl-s"><span class="pl-pds">'</span>imagesCompare:changed<span class="pl-pds">'</span></span>, <span class="pl-k">function</span> (<span class="pl-c1">event</span>) {
+    <span class="pl-en">console</span>.<span class="pl-c1">log</span>(<span class="pl-s"><span class="pl-pds">'</span>change<span class="pl-pds">'</span></span>);
+    <span class="pl-en">console</span>.<span class="pl-c1">log</span>(<span class="pl-c1">event</span>);
+    <span class="pl-k">if</span> (<span class="pl-c1">event</span>.<span class="pl-smi">ratio</span> <span class="pl-k">&lt;</span> <span class="pl-c1">0.4</span>) {
+        <span class="pl-en">console</span>.<span class="pl-c1">log</span>(<span class="pl-s"><span class="pl-pds">'</span>We see more than half of the back image<span class="pl-pds">'</span></span>);
+    }
+    <span class="pl-k">if</span> (<span class="pl-c1">event</span>.<span class="pl-smi">ratio</span> <span class="pl-k">&gt;</span> <span class="pl-c1">0.6</span>) {
+        <span class="pl-en">console</span>.<span class="pl-c1">log</span>(<span class="pl-s"><span class="pl-pds">'</span>We see more than half of the front image<span class="pl-pds">'</span></span>);
+    }
+
+    <span class="pl-k">if</span> (<span class="pl-c1">event</span>.<span class="pl-smi">ratio</span> <span class="pl-k">&lt;=</span> <span class="pl-c1">0</span>) {
+        <span class="pl-en">console</span>.<span class="pl-c1">log</span>(<span class="pl-s"><span class="pl-pds">'</span>We see completely back image<span class="pl-pds">'</span></span>);
+    }
+
+    <span class="pl-k">if</span> (<span class="pl-c1">event</span>.<span class="pl-smi">ratio</span> <span class="pl-k">&gt;=</span> <span class="pl-c1">1</span>) {
+        <span class="pl-en">console</span>.<span class="pl-c1">log</span>(<span class="pl-s"><span class="pl-pds">'</span>We see completely front image<span class="pl-pds">'</span></span>);
+    }
+});</pre></div>
+
+<h3>
+<a id="changing-value" class="anchor" href="#changing-value" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Changing value</h3>
+
+<p>You can change value of visible front part via code :</p>
+
+<div class="highlight highlight-source-js"><pre><span class="pl-c">// important call data('imagesCompare') to get the real object and not the jquery one</span>
+<span class="pl-k">var</span> test <span class="pl-k">=</span> <span class="pl-en">$</span>(<span class="pl-s"><span class="pl-pds">'</span>#myImageCompare<span class="pl-pds">'</span></span>).<span class="pl-en">imagesCompare</span>().<span class="pl-c1">data</span>(<span class="pl-s"><span class="pl-pds">'</span>imagesCompare<span class="pl-pds">'</span></span>);
+<span class="pl-smi">test</span>.<span class="pl-en">setValue</span>(<span class="pl-c1">0</span>);</pre></div>
+
+<h3>
+<a id="changing-value-with-animation" class="anchor" href="#changing-value-with-animation" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Changing value with animation</h3>
+
+<p>You can change value of visible front part via code and request an animation :</p>
+
+<div class="highlight highlight-source-js"><pre><span class="pl-c">// important call data('imagesCompare') to get the real object and not the jquery one</span>
+<span class="pl-k">var</span> test <span class="pl-k">=</span> <span class="pl-en">$</span>(<span class="pl-s"><span class="pl-pds">'</span>#myImageCompare<span class="pl-pds">'</span></span>).<span class="pl-en">imagesCompare</span>().<span class="pl-c1">data</span>(<span class="pl-s"><span class="pl-pds">'</span>imagesCompare<span class="pl-pds">'</span></span>);
+
+<span class="pl-c">// here we pass true in second argument to say we want animation</span>
+<span class="pl-smi">test</span>.<span class="pl-en">setValue</span>(<span class="pl-c1">0</span>, <span class="pl-c1">true</span>);
+
+<span class="pl-c">// you can change some settings via the plugin settings (see plugin settings section)</span>
+<span class="pl-c">// you can too override duration and easing for one call :</span>
+<span class="pl-c">// test.setValue(ratio, animate, duration, easing);</span></pre></div>
+
+<h3>
+<a id="contribute" class="anchor" href="#contribute" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Contribute</h3>
+
+<p>Clone the repository, then launch an :</p>
+
+<div class="highlight highlight-source-shell"><pre>npm install</pre></div>
+
+<p>To lint js and css use :</p>
+
+<div class="highlight highlight-source-shell"><pre>npm run lint</pre></div>
+
+<p>To build use :</p>
+
+<div class="highlight highlight-source-shell"><pre>npm run build</pre></div>
+
+<p>To test use :</p>
+
+<div class="highlight highlight-source-shell"><pre>npm <span class="pl-c1">test</span></pre></div>
+
+<p>(You can open the file src/tests/test.html in your browser too)</p>
+
+<p><em>Too look available scripts look at the scripts part in the package.json file</em></p>
+
+<h2>
+<a id="contributors" class="anchor" href="#contributors" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Contributors</h2>
+
+<ul>
+<li>
+<a href="https://github.com/sylvaincombes">@sylvaincombes</a> (Maintainer)</li>
+<li><a href="https://github.com/drenawak">@drenawak</a></li>
+<li><a href="http://celine-skowron.fr">Céline Skowron</a></li>
+</ul>
+
+<h2>
+<a id="credits" class="anchor" href="#credits" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Credits</h2>
+
+<h3>
+<a id="external-libs-and-code" class="anchor" href="#external-libs-and-code" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>External libs and code</h3>
+
+<h4>
+<a id="libraries" class="anchor" href="#libraries" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Libraries</h4>
+
+<ul>
+<li><a href="http://jquery.com">jQuery</a></li>
+<li><a href="http://hammerjs.github.io/">Hammerjs</a></li>
+</ul>
+
+<h4>
+<a id="code-snippets" class="anchor" href="#code-snippets" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Code snippets</h4>
+
+<ul>
+<li><a href="http://www.jacklmoore.com/notes/naturalwidth-and-naturalheight-in-ie/">naturalWidth and naturalHeight polyfill</a></li>
+<li>Drag Handle look and feel taken from <a href="https://github.com/zurb/twentytwenty">zurb twentytwenty</a>
+</li>
+</ul>
+
+<h3>
+<a id="images-in-examples" class="anchor" href="#images-in-examples" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Images in examples</h3>
+
+<p>Images used in example are kindly provided by <a href="http://celine-skowron.fr">Céline Skowron</a>, all rights belong to her so you can't use them anywhere without contacting her.</p>
+
+<h2>
+<a id="license" class="anchor" href="#license" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>License</h2>
+
+<p>Released under the MIT license.</p>
+
+<h2>
+<a id="other-libraries-on-the-same-subject" class="anchor" href="#other-libraries-on-the-same-subject" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Other libraries on the same subject</h2>
+
+<ul>
+<li><a href="https://github.com/zurb/twentytwenty">zurb twentytwenty</a></li>
+<li><a href="http://www.catchmyfame.com/catchmyfame-jquery-plugins/jquery-beforeafter-plugin/">jquery-beforeafter-plugin</a></li>
+<li><a href="https://juxtapose.knightlab.com/">juxtapose</a></li>
+</ul>
+
+      <footer class="site-footer">
+        <span class="site-footer-owner"><a href="https://github.com/sylvaincombes/jquery-images-compare">jQuery Images Compare</a> is maintained by <a href="https://github.com/sylvaincombes">sylvaincombes</a>.</span>
+
+        <span class="site-footer-credits">This page was generated by <a href="https://pages.github.com">GitHub Pages</a> using the <a href="https://github.com/jasonlong/cayman-theme">Cayman theme</a> by <a href="https://twitter.com/jasonlong">Jason Long</a>.</span>
+      </footer>
+
+    </section>
+
+  
+  </body>
+</html>
