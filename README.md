@@ -2,7 +2,11 @@
 
 A jquery plugin for comparing two images
 
-![jquery images compare preview](preview.gif)
+![jquery images compare preview](https://raw.githubusercontent.com/sylvaincombes/jquery-images-compare/master/preview.gif)
+
+## Badges
+
+[![Scrutinizer Build Status](https://img.shields.io/scrutinizer/build/g/sylvaincombes/jquery-images-compare.svg?maxAge=2592000&style=flat-square&b=master)](https://scrutinizer-ci.com/g/sylvaincombes/jquery-images-compare/build-status/master) [![Scrutinizer Code Quality](https://img.shields.io/scrutinizer/g/sylvaincombes/jquery-images-compare.svg?maxAge=2592000&style=flat-square&b=master)](https://scrutinizer-ci.com/g/sylvaincombes/jquery-images-compare/?branch=master) [![GitHub tag](https://img.shields.io/github/tag/sylvaincombes/jquery-images-compare.svg?maxAge=2592000&style=flat-square)](https://github.com/sylvaincombes/jquery-images-compare/tags) [![GitHub release](https://img.shields.io/github/release/sylvaincombes/jquery-images-compare.svg?maxAge=2592000&style=flat-square)](https://github.com/sylvaincombes/jquery-images-compare/releases) [![npm](https://img.shields.io/npm/v/jquery-images-compare.svg?maxAge=2592000&style=flat-square)]() [![license](https://img.shields.io/github/license/mashape/apistatus.svg?maxAge=2592000&style=flat-square)](https://raw.githubusercontent.com/sylvaincombes/jquery-images-compare/master/LICENSE.md)
 
 ## Features
 
@@ -21,6 +25,8 @@ A jquery plugin for comparing two images
 - Animation option when changing the value
 
 - Optional alternative interaction modes : drag by default (the recommended one), click and mousemove (warning desktop friendly only for this settings)
+
+- Size : ~2k of js and ~0.5k of css (minified and gzipped)
 
 > NB : This library only does horizontal slide
 

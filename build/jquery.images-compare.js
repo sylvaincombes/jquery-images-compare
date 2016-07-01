@@ -1,12 +1,15 @@
-;(function ($, window, document, undefined) {
+/** global: Hammer */
+;(function ($, window) {
     "use strict";
 
-    // String repeat polyfill
-    if (!String.prototype.repeat) {
-        String.prototype.repeat = function (n) {
-            n = n || 1;
-            return new Array(n + 1).join(this);
-        };
+    function stringRepeat(s, precision) {
+        // String repeat polyfill
+        if (!String.prototype.repeat) {
+            precision = precision || 1;
+            return new Array(precision + 1).join(s);
+        } else {
+            return s.repeat(precision);
+        }
     }
 
     var pluginName = 'imagesCompare',
@@ -24,7 +27,7 @@
     function ImagesCompare(element, options) {
         element = $(element);
         options = $.extend({}, defaults, options);
-        options.roundFactor = parseInt('1' + '0'.repeat(options.precision));
+        options.roundFactor = parseInt('1' + stringRepeat('0', options.precision));
 
         this._name = pluginName;
 
@@ -62,7 +65,10 @@
                 setVisibleRatio(lastRatio);
 
                 // Let the world know we have done some resize updates
-                element.trigger(events.resized);
+                element.trigger({
+                    type: events.resized,
+                    originalEvent: event
+                });
             });
         }
 
@@ -75,21 +81,35 @@
 
             switch (options.interactionMode) {
                 case "drag":
-                    if (typeof Hammer == 'undefined') {
-                        console.error('Please include the hammerjs library for drag support');
-                    }
-                    addDrag();
-                    addResize();
+                    initDrag();
                     break;
                 case "mousemove":
-                    addMouseMove();
-                    addResize();
+                    initMouseMove();
                     break;
                 case "click":
-                    addClick();
-                    addResize();
+                    initClick();
                     break;
+                default:
+                    initDrag();
             }
+        }
+
+        function initDrag() {
+            if (typeof Hammer == 'undefined') {
+                console.error('Please include the hammerjs library for drag support');
+            }
+            addDrag();
+            addResize();
+        }
+
+        function initMouseMove() {
+            addMouseMove();
+            addResize();
+        }
+
+        function initClick() {
+            addClick();
+            addResize();
         }
 
         function addClick() {
@@ -214,7 +234,7 @@
             $(frontElement).stop().attr('ratio', startValue).animate({ratio: endValue}, {
                 duration: duration,
                 easing: easing,
-                step: function (now, fx) {
+                step: function (now) {
                     var width = getRatioValue(now);
                     lastRatio = now;
                     frontElement.attr('ratio', now).css('clip', 'rect(0, ' + width + 'px, ' + size.height + 'px, 0)');
@@ -234,7 +254,9 @@
                         type: events.changed,
                         ratio: ratio,
                         value: getRatioValue(ratio),
-                        animate: true
+                        animate: true,
+                        animation : animation,
+                        jumpedToEnd: jumpedToEnd
                     });
                 }
             });
@@ -397,7 +419,7 @@
         prop = props[index];
         /*jslint loopfunc: true */
         (function (natural, prop) {
-            $.fn[natural] = (natural in new Image()) ?
+            $.fn[natural] = (natural in document.createElement('img')) ?
                 function () {
                     return this[0][natural];
                 } :
@@ -405,10 +427,10 @@
                     var
                         node = this[0],
                         img,
-                        value;
+                        value = 0;
 
                     if (node.tagName.toLowerCase() === 'img') {
-                        img = new Image();
+                        img = document.createElement('img');
                         img.src = node.src;
                         value = img[prop];
                     }
