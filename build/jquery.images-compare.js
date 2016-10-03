@@ -7,9 +7,8 @@
         if (!String.prototype.repeat) {
             precision = precision || 1;
             return new Array(precision + 1).join(s);
-        } else {
-            return s.repeat(precision);
         }
+        return s.repeat(precision);
     }
 
     var pluginName = 'imagesCompare',
@@ -42,7 +41,37 @@
             resized: "imagesCompare:resized"
         };
 
-        init();
+        function onImagesLoaded() {
+            var images = element.find('img'),
+                totalImagesCount= images.length,
+                elementsLoaded = 0;
+
+            function onImageLoaded(){
+                if (elementsLoaded >= totalImagesCount) {
+                    init();
+                }
+            }
+
+            images.each(function() {
+                // Image already loaded (cached)
+                if ($(this)[0].complete) {
+                    totalImagesCount--;
+                    onImageLoaded();
+                } else {
+                    // Image loading / error
+                    $(this).load(function() {
+                        elementsLoaded++;
+                        onImageLoaded();
+                    });
+                    $(this).error(function() {
+                        elementsLoaded++;
+                        onImageLoaded();
+                    });
+                }
+            });
+        }
+
+        onImagesLoaded();
 
         function init() {
             updateDom();

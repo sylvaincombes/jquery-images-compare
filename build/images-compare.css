@@ -99,6 +99,11 @@
     padding: 10px;
     border-radius: 5px;
     pointer-events: none;
+    display: none;
+}
+
+.images-compare-container .images-compare-label {
+    display: inherit;
 }
 
 .images-compare-before .images-compare-label {
