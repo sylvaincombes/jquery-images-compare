@@ -21,11 +21,11 @@
   },
   "dependencies": {
     "hammerjs": "^2.0.8",
-    "jquery": "^2.2.4"
+    "jquery": "^3.1.1"
   },
   "devDependencies": {
     "copy-cli": "^1.2.1",
-    "csslint": "^0.10.0",
+    "csslint": "^1.0.5",
     "jshint": "^2.9.2",
     "node-qunit-phantomjs": "^1.4.0",
     "qunitjs": "^2.0.0",
