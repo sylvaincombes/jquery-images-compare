@@ -59,11 +59,11 @@
                     onImageLoaded();
                 } else {
                     // Image loading / error
-                    $(this).load(function() {
+                    $(this).on('load', function() {
                         elementsLoaded++;
                         onImageLoaded();
                     });
-                    $(this).error(function() {
+                    $(this).on('error', function() {
                         elementsLoaded++;
                         onImageLoaded();
                     });
