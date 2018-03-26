@@ -8,6 +8,15 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 
 *Nothing at this moment*
 
+## [0.2.4] - 2018-26-03
+
+### Fixed
+- jQuery 3 compatibility on load and error, [see documentation](https://jquery.com/upgrade-guide/3.0/#breaking-change-load-unload-and-error-removed) - thanks to [Iván Pérez](https://github.com/Ivan-Perez) for reporting.
+
+### Changed
+- Update all dependencies
+- Add a package-lock.json
+
 ## [0.2.3] - 2016-10-03
 
 ### Fixed

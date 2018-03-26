@@ -244,6 +244,7 @@ npm test
 - [@sylvaincombes](https://github.com/sylvaincombes) (Maintainer)
 - [@drenawak](https://github.com/drenawak)
 - [Céline Skowron](http://celine-skowron.fr)
+- [Iván Pérez](https://github.com/Ivan-Perez)
 
 ## Credits
 
