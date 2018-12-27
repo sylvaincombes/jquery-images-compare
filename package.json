@@ -26,10 +26,10 @@
   "devDependencies": {
     "copy-cli": "^1.2.1",
     "csslint": "^1.0.5",
-    "jshint": "^2.9.5",
+    "jshint": "^2.9.7",
     "node-qunit-phantomjs": "^1.6.3",
-    "qunit": "^2.5.1",
-    "uglify-js": "^3.3.16"
+    "qunit": "^2.8.0",
+    "uglify-js": "^3.4.9"
   },
   "scripts": {
     "lint:js": "jshint src/assets/js/*.js",
