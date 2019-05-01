@@ -21,7 +21,7 @@
   },
   "dependencies": {
     "hammerjs": "^2.0.8",
-    "jquery": "^3.3.1"
+    "jquery": "^3.4.1"
   },
   "devDependencies": {
     "copy-cli": "^1.2.1",
