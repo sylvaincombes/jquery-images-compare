@@ -29,7 +29,7 @@
     "jshint": "^2.9.7",
     "node-qunit-phantomjs": "^2.1.0",
     "qunit": "^2.8.0",
-    "uglify-js": "^3.4.9"
+    "uglify-js": "^3.7.2"
   },
   "scripts": {
     "lint:js": "jshint src/assets/js/*.js",
