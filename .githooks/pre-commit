@@ -1,0 +1,5 @@
+#!/usr/bin/env sh
+set -e
+
+echo "Running lint..."
+bun run lint

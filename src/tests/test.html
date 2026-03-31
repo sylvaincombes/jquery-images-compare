@@ -1,76 +1,281 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width">
     <title>QUnit Example</title>
-    <link rel="stylesheet" href="../../examples/assets/css/example.css"/>
-    <link rel="stylesheet" href="../assets/css/images-compare.css"/>
-    <link rel="stylesheet" href="https://code.jquery.com/qunit/qunit-2.0.0.css">
+    <style>
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            margin: 0;
+        }
+
+        #qunit {
+            margin: 20px;
+        }
+
+        body #qunit,
+        body #qunit-fixture {
+            position: static;
+            float: none;
+            clear: both;
+        }
+
+        body #qunit-testrunner-toolbar,
+        body #qunit-testresult,
+        body #qunit-tests {
+            position: static;
+        }
+
+        .test-main {
+            padding: 20px;
+        }
+
+        .test-jump {
+            display: inline-block;
+            margin: 0 0 12px;
+            padding: 10px 16px;
+            background: #1f6feb;
+            color: #ffffff;
+            text-decoration: none;
+            border-radius: 6px;
+            font-weight: 600;
+            letter-spacing: 0.01em;
+        }
+
+        .test-jump:hover,
+        .test-jump:focus {
+            background: #1a5fd0;
+            color: #ffffff;
+        }
+
+        .test-checkerboard {
+            background-color: #f0f0f0;
+            background-image:
+                linear-gradient(45deg, #d9d9d9 25%, transparent 25%),
+                linear-gradient(-45deg, #d9d9d9 25%, transparent 25%),
+                linear-gradient(45deg, transparent 75%, #d9d9d9 75%),
+                linear-gradient(-45deg, transparent 75%, #d9d9d9 75%);
+            background-size: 20px 20px;
+            background-position: 0 0, 0 10px, 10px -10px, -10px 0;
+            padding: 0;
+            display: inline-block;
+        }
+    </style>
+    <link rel="stylesheet" href="/examples/assets/css/example.css"/>
+    <link rel="stylesheet" href="/src/assets/css/images-compare.css"/>
+    <link rel="stylesheet" href="https://code.jquery.com/qunit/qunit-2.25.0.css" integrity="sha256-u09P9nfJ159U3nzs4JTe+R+CnykeROFWAqyz8AW0j5w=" crossorigin="anonymous">
 </head>
 <body>
+<main class="test-main">
+    <a class="test-jump" href="#qunit">Jump to QUnit results</a>
+    <div class="page-container">
+        <h1>jQuery Image compare</h1>
+        <h2>Example</h2>
+
+        <!-- Test 1 -->
+        <div class="js-img-compare">
+            <div style="display: none;">
+                <span class="images-compare-label">Before</span>
+                <img src="/examples/assets/img/01-celine-skowron-before.jpg" alt="Before">
+            </div>
+            <div>
+                <span class="images-compare-label">After</span>
+                <img src="/examples/assets/img/01-celine-skowron-after.jpg" alt="After">
+            </div>
+        </div>
+        <div>
+            <button type="button" class="btn js-front-btn">Show front image</button>
+            <button type="button" class="btn js-back-btn">Show back image</button>
+            <button type="button" class="btn js-toggle-btn">Toggle</button>
+        </div>
+
+        <h2>Click mode</h2>
+        <div class="js-img-compare-click">
+            <div style="display: none;">
+                <span class="images-compare-label">Before</span>
+                <img src="/examples/assets/img/01-celine-skowron-before.jpg" alt="Before">
+            </div>
+            <div>
+                <span class="images-compare-label">After</span>
+                <img src="/examples/assets/img/01-celine-skowron-after.jpg" alt="After">
+            </div>
+        </div>
+
+        <h2>Mousemove mode (desktop)</h2>
+        <div class="js-img-compare-move">
+            <div style="display: none;">
+                <span class="images-compare-label">Before</span>
+                <img src="/examples/assets/img/01-celine-skowron-before.jpg" alt="Before">
+            </div>
+            <div>
+                <span class="images-compare-label">After</span>
+                <img src="/examples/assets/img/01-celine-skowron-after.jpg" alt="After">
+            </div>
+        </div>
+
+        <footer>
+            Image credits : <a href="https://celine-skowron.fr">Céline Skowron</a>
+        </footer>
+
+    </div>
+    <div class="page-container">
+        <h2>Transparent Images (Generated)</h2>
+        <p>These are programmatically generated, rights-free images with transparency.</p>
+        <h3>PNG</h3>
+        <div class="test-checkerboard">
+            <div class="js-img-compare-transparent-png">
+            <div style="display: none;">
+                <img
+                    src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAMgAAABkCAMAAAD0WI85AAAAIGNIUk0AAHomAACAhAAA+gAAAIDoAAB1MAAA6mAAADqYAAAXcJy6UTwAAABRUExURQAAAP8AAP8AAP8AAP8AAP8AAP8AAP8AAP8AAP8AAP8AAP8AAP8AAP8AAP8AAP8AAP8AAP8AAP8AAP8AAP8AAP8AAACA//8AAP8AAP8AAP///zwvRRgAAAAadFJOUwAIGzZVco2hrrIHKWGqswQtfQ4PZQaAazRJptJPpAAAAAFiS0dEGnVn5DIAAAAHdElNRQfqAx4WCAq8ynTsAAAAJXRFWHRkYXRlOmNyZWF0ZQAyMDI2LTAzLTMwVDIyOjA4OjEwKzAwOjAw0O7Q0wAAACV0RVh0ZGF0ZTptb2RpZnkAMjAyNi0wMy0zMFQyMjowODoxMCswMDowMKGzaG8AAAAodEVYdGRhdGU6dGltZXN0YW1wADIwMjYtMDMtMzBUMjI6MDg6MTArMDA6MDD2pkmwAAAB50lEQVR42u2bCXKDMAxFWcwOYgtNcv+LdmiaNEObYIwGeX71DsDojbHlRQoCRVEURVH+OWEUmyTN8iLP0sTEUSgdkAtlVTe0pKmrUjqwTbRdT6/ou1Y6PFsGQ+8xg3SINownWuc0Soe5xrQ2Go9Rmew++LEbJ4/OUmOm81ekPG/wIDrbrGASIlGxyYOoiLwUuWzUmLl4KHJ18CC6eidiu1otMZ6JuHqsmhws4vZf2fxdx4q4zPMf3s74Q0WiXR5E71bhI0XKrfljSVH6IbItn//F2QuRLfurV3QeiEwMHkSTvIh7BnnGiIuMLB5Eo7SIzXnQhpOwyMDkQTTIivDMkBkjKtKyeRC1kiIcOeROJynS74//QS8oUjJ6EJVyIhWrSCUnUrOK1HIizf7on2jEREJWD6JQSmTvyXBJJCUSM4vEUiJ8+5MbRkokYRZJpERSZpFUSiRjFsmkRHJmkVxKZO991i90RHSO3IBZtWDyCExmh9lrwex+Yc4jMCdEnDM7zC0KzL0WzE0jzt0vzG08zPsIzosVzBsizqsuzDs7TuUDTC0KTnUQTr0WTAUdTk0jTpUpTt0vTiU2Tm08TrcCTv8ITkdPANNjFeB0vQUwfYgzIJ2hMyC9ul9gdE9/A9HPriiKoiiIfALAU69qQN8R6gAAAABJRU5ErkJggg=="
+                    width="200"
+                    height="100"
+                    alt="PNG Before"
+                >
+            </div>
+            <div>
+                <img
+                    src="data:image/png;base64,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"
+                    width="200"
+                    height="100"
+                    alt="PNG After"
+                >
+            </div>
+            </div>
+        </div>
+        <h3>GIF</h3>
+        <div class="test-checkerboard">
+            <div class="js-img-compare-transparent-gif">
+            <div style="display: none;">
+                <img
+                    src="data:image/gif;base64,R0lGODlhyABkAPQaAAAAAP8AAP8AAP8AAP8AAP8AAP8AAP8AAP8AAP8AAP8AAP8AAP8AAP8AAP8AAP8AAP8AAP8AAP8AAP8AAP8AAP8AAACA//8AAP8AAP8AAP///wAAAAAAAAAAAAAAAAAAACH5BAEAAAAALAAAAADIAGQAAAX/ICCOZGmeaKqubOu+cCzPdG3feK7vfO//wKBwSCwaj8ikcslsOp/QqHRKrVqv2Kx2y+16v8SAYEAoGA6IBOJgKBAGggB4LlUsGA2Hfs/v6xsMCwp0hEcPEBF+iot8ERAPhZE+EgSMlpcOBBKSnDYTFJihlhQTnaYuFZWiq4wEFUYWsbKztLW2t7i5ulQQrL6WEEW6w8TFxhZ1F7/LixeDQsfR0sZRAgnM2H4JAtDT3t+0UBjZ5H4YQeDp308Z5e58GUDq89FOqu/4BD/0/MRN9/jy+ehHEBeTdgETOojHo6DDcErGKVR4bsfDi8iSCJjIkZsOjA+TKLjGUWGCZzhA/zpMoqzkxAsfVRJE0sslx2ApZfY7UsGmy1c3dO40AtBnQn1BhdIzMsGoy1I2lC4tAsopRwpJpaYrIsGqy001tKorUtRrQKQ0xG4d8sCsS0hp1a4bUtPtRJwz5M4VksjuxAhh9U4bosBvSZQxBA8WssAwxwVxFR8bwsDxRAaRJRcbksdywgaZNQ8TEsDzRDkyRFMLstF0Qo+JVfsLMsB1wgF5ZY8OUtZ2NrQwdO8GUsA3vgK5hRsMYsD4OwPJldsScsC5uwPRpUMEgsB6OQTZtcsSQtJ7tvDiM3I3nw186vTbf1Rnzwz7e/jjmdNnBv0+fvU/FLffL8j5h58QvQ14Cf9wL/yXHxC1KcgKbgbCJ0RrEooCW3AOAuhDaRmKglpsDnIWIiagoSceZSdegpmK2g3RWIuMQAajdITRyAhiHJY4RF86NhKYj0LUFaQeeFWYHhFtHbkHXDcqR5aTmUTVIVdUghWahVQdiZWVRA7RVJBQDfnfEQkOyGCUwvGkI1BgnnmEkRImaeaBSLQkIUw5dOghESNJeFJMYRqB4X4bZiVnEhLRVxGhiyaBkHkMWXQlE2l6tmZOhSaRqWGbchrpEpO6VmkPfopj26MDXfqENZZt002nTCigp1vODJHqFHQ6Zac8rkqRilWuwBLsFJ/YRMopzLpAyUSaNCutC4cAmY03I1BOqy0LduDhCyCCbCuuDGKQYQYaarDhBhwjjuvuu/DGK++89NZr77345qvvvvz26++/APcbAgA7"
+                    width="200"
+                    height="100"
+                    alt="GIF Before"
+                >
+            </div>
+            <div>
+                <img
+                    src="data:image/gif;base64,R0lGODlhyABkAPQAAAAAAE+9N0a+OkC/PEi+OUy+OFS8Nlu8NGm6L2O6MWa6MGe6MDnAPgTHTwbHTgfHTg/GSw3GTBnFSADIUCPDRSbDRCvCQi3CQqmxG9yqC/qmAv+lAAAAAAAAAAAAAAAAACH5BAEAAAAALAAAAADIAGQAAAX/ICCOZGmeaKqubOu+cCzPdG3feK7vfO//wKBwSCwaj8ikcslsOp/QqHRKrVqv2Kx2y+16v+DsZkzehM/YsnpdRruX7Ljc/K4D5/i5fY/L+/V8gS9/hICChyaFioaIh4uPcY2CkJSRknWVmWuXQhNBmqBtnD4Tnj+hqGOjPKWlPqmwqzmtrTywt7I2tLU6t765M7u0Ob7FwDDCuzfFzMctyco2zMbOKtDCNdPN1SfXyTPa09wl3t8y4dvjAOXQMeji4+zXMO/pzvLzLvXwx/je+vuoAfNXjkVAfqsIFlxx0B4nhewYNvyVEGJEFBMdIrIoL0VGgY044sP4EZckkf4S/5WkeAhlyhIrWQZySRBmzFiCaCokcRMnH507R/RMNRNoUABDUf00ChFpUqV1mFp0+hRUVKkWM1S16gYrRwRbNXX1ajEBhrCV0JDlmACBVrSPzqzleAABWLiLwszlGMDuWbyE9O61OMCuW8B/wAzmeMHwXcR4vizmKMHxX8hyvEzm+MDxYcyWtmwW2dYx6NBZRossbPm0Gi6qRVLw/Nk1ndSxOdN+7FpLbpQGaF8G7fu37N1viWMxjrLz7t5XmLtk7Xk44OXSUUbYXfu6lew0C3CHHB28y+27rYf9bp4mdc/J11dpr9P5c7jz6eucnR5tfv06iYfcVv8BSJN9tBE4hWeBTFXWX1JUMChVYwP2FKGEUjEw3k0XYijVe4ap11CHHn5YYUYklpjhfROpkwaHLr5YUoxboEgjFyPe6EU9Op6hTY9vyARkkGINiUhcRubCRpJMNunkk1BGKeWUVFZp5ZVYZqllkyEAADs="
+                    width="200"
+                    height="100"
+                    alt="GIF After"
+                >
+            </div>
+            </div>
+        </div>
+        <h3>WebP</h3>
+        <div class="test-checkerboard">
+            <div class="js-img-compare-transparent-webp">
+            <div style="display: none;">
+                <img
+                    src="data:image/webp;base64,UklGRswEAABXRUJQVlA4WAoAAAAQAAAAxwAAYwAAQUxQSL0BAAABBrm1bctt8wMsfkRAAb8CDciw0AMLeAVoipghl+0GUARSzcIr0iL+vS+z12VETID+C7Atk83L+rF9XJbZptKGLF/dvfjfv+gqx6oZnv3nNTRh6szPbV2I+iffo/rwHMz3atrLH4B1DL5nBSaffN/KUSmb710lJqPXOEbk6HUqHua1WjTM67VYHL1mRWL0usc4FK+9RCFv1SkH4eT1KwaDI1QEDo5RATAQxq93lKL3BEPsOsfZkTMgxq1xpA21AYqoPUMRs+xYRewKzBWxOzAi9gLmhVfraFtaBU6hNcERLYNjtGY4M60FzkJrhbPS+oAjWhucC60POKK1wllpLXAWWjOcmZbBMVoTHNEqcAqtFk5LSy9gXsTrDoyIXYG5IpbBiJieoSgxG6CIWgOloSYDYuLWAenI6QmGErsehujJQJj4HUAoABogKEVAJwBKMchbdcpBUKmuKAoaKxsVBx2rUoqErCJTLGTVmKKhYyVK8dBYxaiIqGy7U0kxUT7tTDlFRRp2pbRPVjrYbkwpNlL/tAv1KcKdnc06RbkZns+goUmhzld3Lz/woqucIt6WyeZl/dg+LstsU2nTv8QBAFZQOCDoAgAAEBgAnQEqyABkAD6RQJpKJaOiIarwioiwEglN3AW2O7Bsf4j8btmY7D+SPMkbQ978pn5wuVX3x/4D2GeYB+kHSA8wH6NfsB74noA/Ub2AP6b/SfS39gD0AP2q9K/9pPge/b70Zf/ZrYHQAIMf15iGovfJmpCoH0Mb0s//X8kqVlHJ7TidS6rTKygIzDzjBpqBL0Its04MKtCRQZwWFuHQVJsZM74M6Cpu/AGwW0YgnE6Xe8BZqM0ytUzjO0YzgvUUbdyC1nX2QjwAAP77/Yx7KQf/+NlHo0o5s7iOQfo7IHa64x5xvwrYLW4Zr7rKytx0ZQpXrCdOu+4artp6dd9waEOYfjkfMwRhz//lluZzQMX0g4QjvmXQItdGiyZL4nb6n2iDXKMqqQTGBG05a2VsLBKh2bPcVB/7f/7sYX0RBfJLl6NKMjhzG7R3zVYelzed628BKXnZUBReC5SMD9sTu0dnkBKXnZUBRd7WmCbdnDTcFO5Yw6K/gwaQVkYTjF36o7S9L9rrL0x6X9De7PcsthyvkHDBM3s40bciv555Rav1mKgeDmT8LmTuFDYa5sDbL8VOn95mW24Ad3+6SqpEDz4gxAPXFmlM9Ewf4ORe1awAGZKBZ9uyBv/C4OnLH9c/OdqwEE4vL944wCD2i6RuXfoIFzgC5mg8Tg2KRUG52Z3PZ+VfslTnRjSH3U6GVR5jRkH/K2atKRc9QJYrHr7ypeDzq/wO48eMhE6BgLB+ezNNH05RmGGdzyEPZqVeMJ+pEBPhLR9tk4NvTrsOdeW6i7yFAoyI6O4C0a7waEM3rAtd878/5/OkBsYX7QJV7gSNNRJSsvoKUEl/9IDlHQjG7Xc+RxJuWrFZonsUP4POYLC/KmkjvvJbrvzfw6seEZOimAd8Go6E/yAxtT5fN+9ko9rCQ4ylT03/euQO0P49XkXRxNEQcoIPRJK23qGX3r3DdUDgW0xkWg2XPuEosazBrhKwAAAAAAAA"
+                    width="200"
+                    height="100"
+                    alt="WebP Before"
+                >
+            </div>
+            <div>
+                <img
+                    src="data:image/webp;base64,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"
+                    width="200"
+                    height="100"
+                    alt="WebP After"
+                >
+            </div>
+            </div>
+        </div>
+
+        <h3>AVIF</h3>
+        <div class="test-checkerboard">
+            <div class="js-img-compare-transparent-avif">
+                <div style="display: none;">
+                    <img
+                        src="data:image/avif;base64,AAAAHGZ0eXBhdmlmAAAAAG1pZjFhdmlmbWlhZgAAAXBtZXRhAAAAAAAAACFoZGxyAAAAAAAAAABwaWN0AAAAAAAAAAAAAAAAAAAAAA5waXRtAAAAAAABAAAANGlsb2MAAAAAREAAAgABAAAAAAGUAAEAAAAAAAABXQACAAAAAALxAAEAAAAAAAABjAAAADhpaW5mAAAAAAACAAAAFWluZmUCAAAAAAEAAGF2MDEAAAAAFWluZmUCAAAAAAIAAGF2MDEAAAAAr2lwcnAAAACKaXBjbwAAAAxhdjFDgQAMAAAAABRpc3BlAAAAAAAAAMgAAABkAAAAEHBpeGkAAAAAAwgICAAAAAxhdjFDgQAcAAAAAA5waXhpAAAAAAEIAAAAOGF1eEMAAAAAdXJuOm1wZWc6bXBlZ0I6Y2ljcDpzeXN0ZW1zOmF1eGlsaWFyeTphbHBoYQAAAAAdaXBtYQAAAAAAAAACAAEDgQIDAAIEhAIFhgAAABppcmVmAAAAAAAAAA5hdXhsAAIAAQABAAAC8W1kYXQSAAoJGB2x8bBAQ0GhMs0CRIAAooooUNf/JkvtGR6vlYSH4MiTy5+miREN3gHUzq0hB5tWTl11ba5oqhSX+OWDlIsbKNnzrOHG24HG7G9A7+nG1SoR/P8PkBmwZ9XEG5I3s1tJ4MnGBN/oHPu1T2qfxtIkI+2cekrsQ5Q1ovuTpoFaIP20RnOl+j4Shxw5Z4/aRhQvDVd2npmVJYBwCcfJylKGSe+i51pTrPg05H1Ne6YRtukj5K2I0ZKOdNLWzUAJ0O9o8bxbx3IaUvykKs4mLSBq/FBypwvOPDJMieXBzZc3siNbsgEuXZZCO2EWtR0HGIXzKZ6niijdU9OjLbceD7ZBeVNDLJjaO08mVyrFnKKKKGdl7UZkKEsjJWG7/uioVEsLFywrGAueXqKqJJIYf0FRLnvXIbNczNyQQSvuTXUH8198MxBWpXBQBmpuaLRF/Cmic0EvTIr4I/ngEgAKBhgdsfGwqDL/AkSAAooU2AKIcy3BhKKIWeQyqtspz8iPB6o/o3cnc6OFKE4KU37SpVxFt3/+FmACszEHLgMnncLqsthSezdYl45VS4tdNzXomgu26y2xZl10wCFGTsVW5kTETRFLUN8zIHMOW3/YgMgGG5g9XhtFWX46zXs9TDzcCsO8e7mALsz93d5gqRi+IXAOLSyFk91WvSxgu//HqaAQyDUNDGpSTPHPV4jQM6tGKrUNKASKvJv1MfDxRLvWkknaVkKyG1JleskNNc/QGXoD6JvTmw4FgYatZQQbI14IIaYRQytbHUEZovh9Rq0p7pLj8v/sbRPKQ9GocMjBpufabHXY1/BouMAJAs+PmkejlHm9bOr/058klVfdJ6kENINRe0xwVoNVCmpsaylEf29R+DKR8QVCIeKTjRkiyekaJ3yAtUMTqgAJy1UPB4BDiQH4oDArUoeRBC/iojBOeawFiLrrkt5O5WGp5bevHQMM/USI/XIXGVKf/pdic4hUDiZDIRKCpiQQ"
+                        width="200"
+                        height="100"
+                        alt="AVIF Before"
+                    >
+                </div>
+                <div>
+                    <img
+                        src="data:image/avif;base64,AAAAHGZ0eXBhdmlmAAAAAG1pZjFhdmlmbWlhZgAAAXBtZXRhAAAAAAAAACFoZGxyAAAAAAAAAABwaWN0AAAAAAAAAAAAAAAAAAAAAA5waXRtAAAAAAABAAAANGlsb2MAAAAAREAAAgABAAAAAAGUAAEAAAAAAAABmgACAAAAAAMuAAEAAAAAAAABnQAAADhpaW5mAAAAAAACAAAAFWluZmUCAAAAAAEAAGF2MDEAAAAAFWluZmUCAAAAAAIAAGF2MDEAAAAAr2lwcnAAAACKaXBjbwAAAAxhdjFDgQAMAAAAABRpc3BlAAAAAAAAAMgAAABkAAAAEHBpeGkAAAAAAwgICAAAAAxhdjFDgQAcAAAAAA5waXhpAAAAAAEIAAAAOGF1eEMAAAAAdXJuOm1wZWc6bXBlZ0I6Y2ljcDpzeXN0ZW1zOmF1eGlsaWFyeTphbHBoYQAAAAAdaXBtYQAAAAAAAAACAAEDgQIDAAIEhAIFhgAAABppcmVmAAAAAAAAAA5hdXhsAAIAAQABAAADP21kYXQSAAoJGB2x8bBAQ0GhMooDRIAAooooULSA8TuyLyxQGXALWHWXf8Z//NjFUog8N//8ArGdR99kxi0r9gbHv8n57H+P//YLO2GVKwJ4NlBvGMDH5ar4ODpJAMcV/24Qp++I//9cZVQDY65XGM3fGscBsoA/4ikYVL7G23+npgAuaf//8t6WIYlHULrXidoKMBpUZlG4FOD+3Y8/NxhfkVaj9W7IsLulNJ+81raA97WKBPOlXkP60UA5RBN/nGLuvSXMNauVaQw3jNmyT2+kbtE6LXu7KTFiX3VViPQqXMqpJwp4VGJbK2WjqwMBo/sm9ZyHOFLHA49Hm4sQ2oR3f6r6naQFKABycKBnY/uoGjwZ16rf8wRVkMH//3EenTJtvx9kq369BB3wNpqih7ijkITLvZck80YX7AKzc7Nqip5K89aKa9/64RiYl+X2gqpYV4+HrF925x1DFKObGmjWCbdAmMJ2IcfzzH8zStsLSGG7TdGLZx3T61NgK+HdYrUiJ4Rltr7448Y/6cYdrghjInGki/GLQaAS1DXp9RIACgYYHbHxsKgykANEgAKKFLT6/oaDAYfGB0GBZasQ+fhvDf//xSLr5JMgLuz0I6f//mFSR+f67nTUrKitlm1F9Kt50kco3//5BPU8muV54kNgi4L6X43TS8lcK0PA8H7eX85Nj1u5y0IOZuz//+gJ02MF/6heQDlBPNlmOWMFl8g6VyGzY0ByaFtZfz7YLbyDcTp0OPmuniNFC5IwiELxfO5t/aYrMI+leC8vEwopfaCL52SKxi7/upOQ4G8g5jysP5dKJqc+DSYQPTrBxKOfdu2c9uys4ZoWZ46Kt2t8JHfXrx6J4IrVTljNYWsOGaIJ6k0t6mMMtj9vsrD4fIZnHrRWFYQmtyNn1wqAAM6LL924dW1la8b//7o3yOop1cHfv/etHsTzvFz6sAEQf5zxwMN+f9W9VfGXIbZIeFYdc+SZaAI+MT4qDXQjNqaGf/8xLGXz2FUBywypQn4Gium0QlvWXMIH3ZjgBTUCxY3O+4QTt71dCOG35hYWn+aSdIPpM5rZsMdiK8clkz7OFrluRtOX3XIozb7eXbsg"
+                        width="200"
+                        height="100"
+                        alt="AVIF After"
+                    >
+                </div>
+            </div>
+        </div>
+        <h3>SVG</h3>
+        <div class="test-checkerboard">
+            <div class="js-img-compare-transparent-svg">
+            <div style="display: none;">
+                <img
+                    src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='200' height='100'><rect width='200' height='100' fill='none'/><circle cx='60' cy='50' r='30' fill='red' fill-opacity='0.7'/><rect x='110' y='20' width='70' height='60' fill='royalblue' fill-opacity='0.5'/></svg>"
+                    width="200"
+                    height="100"
+                    alt="SVG Before"
+                >
+            </div>
+            <div>
+                <img
+                    src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='200' height='100'><rect width='200' height='100' fill='none'/><circle cx='140' cy='50' r='30' fill='red' fill-opacity='0.7'/><rect x='20' y='20' width='70' height='60' fill='royalblue' fill-opacity='0.5'/></svg>"
+                    width="200"
+                    height="100"
+                    alt="SVG After"
+                >
+            </div>
+            </div>
+        </div>
+    </div>
+</main>
+
 <div id="qunit"></div>
 <div id="qunit-fixture"></div>
 
-<div class="page-container">
-    <h1>jQuery Image compare</h1>
-    <h2>Example</h2>
-
-    <!-- Test 1 -->
-    <div class="js-img-compare">
-        <div style="display: none;">
-            <span class="images-compare-label">Before</span>
-            <img src="../../examples/assets/img/01-celine-skowron-before.jpg" alt="Before">
-        </div>
-        <div>
-            <span class="images-compare-label">After</span>
-            <img src="../../examples/assets/img/01-celine-skowron-after.jpg" alt="After">
-        </div>
-    </div>
-    <div>
-        <button class="btn js-front-btn">Show front image</button>
-        <button class="btn js-back-btn">Show back image</button>
-        <button class="btn js-toggle-btn">Toggle</button>
-    </div>
-
-    <footer>
-        Image credits : <a href="http://celine-skowron.fr">Céline Skowron</a>
-    </footer>
-
-</div>
-
-<script src="https://code.jquery.com/qunit/qunit-2.0.0.js"></script>
-<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
-<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/hammer.js/2.0.8/hammer.min.js"></script>
-<script type="text/javascript" src="../assets/js/jquery.images-compare.js"></script>
+<script src="https://code.jquery.com/qunit/qunit-2.25.0.js" integrity="sha256-0ijVPNkjDIdvOeV6a9B7VtQn/9cSj9k8SjwGgiJ/4jQ=" crossorigin="anonymous"></script>
+<script type="text/javascript" src="https://code.jquery.com/jquery-4.0.0.min.js" integrity="sha256-OaVG6prZf4v69dPg6PhVattBXkcOWQB62pdZ3ORyrao=" crossorigin="anonymous"></script>
+<script type="text/javascript" src="/src/assets/js/jquery.images-compare.js"></script>
+<script type="text/javascript" src="/examples/assets/js/images-compare-controls.js"></script>
 <script type="text/javascript">
-    $(function () {
+    $(() => {
         var imagesCompareElement = $('.js-img-compare').imagesCompare();
+        $('.js-img-compare-click').imagesCompare({ interactionMode: "click" });
+        $('.js-img-compare-move').imagesCompare({ interactionMode: "mousemove" });
+        $('.js-img-compare-transparent-png').imagesCompare();
+        $('.js-img-compare-transparent-gif').imagesCompare();
+        $('.js-img-compare-transparent-webp').imagesCompare();
+        $('.js-img-compare-transparent-avif').imagesCompare();
+        $('.js-img-compare-transparent-svg').imagesCompare();
         var imagesCompare = imagesCompareElement.data('imagesCompare');
         var events = imagesCompare.events();
 
         // CHANGE EVENT TESTS AND
         // GETTER SETTER TESTS
         function testElementChangeEvent(event) {
-            QUnit.test("test change event listener", function (assert) {
+            QUnit.test("test change event listener", (assert) => {
                 assert.equal(event.ratio, 1, 'Change event received and value equal 1');
             });
         }
 
         function testChangeEvent(event) {
-            QUnit.test("test change event listener", function (assert) {
+            QUnit.test("test change event listener", (assert) => {
                 assert.equal(event.ratio, 0, 'Change event received and value equal 0');
             });
         }
 
         // Async tests
-        QUnit.test("Change event tests and getter setter tests", function (assert) {
+        QUnit.test("Change event tests and getter setter tests", (assert) => {
             var numCalls = 3;
             assert.expect(numCalls);
             var done = assert.async(numCalls);
 
             // change value 1 and listen to element
-            setTimeout(function () {
+            setTimeout(() => {
                 imagesCompareElement.on(events.changed, testElementChangeEvent);
                 imagesCompare.setValue(1);
                 assert.equal(imagesCompare.getValue(), 1, "test get and set value from outside : Changed value success (1)");
@@ -78,7 +283,7 @@
             }, 60);
 
             // change value 0 and listen to "data" object
-            setTimeout(function () {
+            setTimeout(() => {
                 imagesCompareElement.off(events.changed, testElementChangeEvent);
                 imagesCompare.on(events.changed, testChangeEvent);
                 imagesCompare.setValue(0);
@@ -86,7 +291,7 @@
                 done();
             }, 120);
 
-            setTimeout(function () {
+            setTimeout(() => {
                 assert.ok(true, 'test get and set value from outside and event completed');
                 imagesCompare.off(events.changed, testChangeEvent);
                 done();
@@ -94,8 +299,8 @@
         });
 
         // RESIZE EVENT TEST
-        function testResizeEvent(event) {
-            QUnit.test("test resize event", function (assert) {
+        function testResizeEvent(_event) {
+            QUnit.test("test resize event", (assert) => {
                 assert.ok(true, 'Resize event received');
             });
         }
@@ -107,6 +312,82 @@
         imagesCompare.on(events.resized, testResizeEvent);
         $(window).trigger('resize');
         imagesCompare.off(events.resized, testResizeEvent);
+        window.imagesCompareBindControls(imagesCompare);
+
+        QUnit.test("Init without images", (assert) => {
+            const done = assert.async();
+            const fixture = $("#qunit-fixture");
+            fixture.empty();
+
+            const container = $(
+                '<div class="js-img-compare-noimg">' +
+                    '<div><span>No image</span></div>' +
+                    '<div><span>No image</span></div>' +
+                '</div>'
+            );
+
+            let initCalled = false;
+            container.on("imagesCompare:initialised", () => {
+                initCalled = true;
+            });
+
+            fixture.append(container);
+            container.imagesCompare();
+
+            setTimeout(() => {
+                assert.ok(initCalled, "Initialised event fires even with no images");
+                done();
+            }, 0);
+        });
+
+        QUnit.test("Drag fallback without PointerEvent", (assert) => {
+            const done = assert.async();
+            const fixture = $("#qunit-fixture");
+            fixture.empty();
+
+            const previousPointerEvent = window.PointerEvent;
+            window.PointerEvent = undefined;
+
+            const dataImage = "data:image/gif;base64,R0lGODlhAQABAAAAACw=";
+            const container = $(
+                '<div class="js-img-compare-fallback" style="width: 200px;">' +
+                    '<div><img src="' + dataImage + '" width="200" height="100" alt="Before"></div>' +
+                    '<div><img src="' + dataImage + '" width="200" height="100" alt="After"></div>' +
+                '</div>'
+            );
+
+            container.on("imagesCompare:initialised", () => {
+                const offset = container.offset();
+                const targetX = offset.left + 100;
+                container.trigger($.Event("mousedown", { pageX: targetX, button: 0 }));
+                $(window).trigger($.Event("mousemove", { pageX: targetX }));
+
+                const imagesCompare = container.data("imagesCompare");
+                const ratio = imagesCompare.getValue();
+
+                window.PointerEvent = previousPointerEvent;
+                assert.ok(ratio > 0.4 && ratio < 0.6, "Mouse fallback updates ratio");
+                done();
+            });
+
+            fixture.append(container);
+            container.imagesCompare();
+        });
+
+        QUnit.test("Transparent formats initialize", (assert) => {
+            const selectors = [
+                ".js-img-compare-transparent-png",
+                ".js-img-compare-transparent-gif",
+                ".js-img-compare-transparent-webp",
+                ".js-img-compare-transparent-avif",
+                ".js-img-compare-transparent-svg",
+            ];
+
+            selectors.forEach((selector) => {
+                const instance = $(selector).data("imagesCompare");
+                assert.ok(instance, `${selector} initialized`);
+            });
+        });
     });
 </script>
 </body>

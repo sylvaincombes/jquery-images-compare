@@ -1,6 +1,8 @@
 # jQuery Images Compare
 
-A jquery plugin for comparing two images
+A jQuery plugin for comparing two images
+
+Prefer a no-dependency version? A vanilla alternative will be available as `vanilla-images-compare` and should be preferred when you do not need jQuery.
 
 ![jquery images compare preview](https://raw.githubusercontent.com/sylvaincombes/jquery-images-compare/master/preview.gif)
 
@@ -10,11 +12,13 @@ A jquery plugin for comparing two images
 
 ## Features
 
-- compatibility : ie9+
+- compatibility : Chrome 80+, Edge 80+, Firefox 74+, Safari 13.1+ (no IE)
+
+- Dependency footprint: jQuery only.
 
 - Effort to put appearance via css (easier to skin / override)
 
-- Touch friendly, mouse drag, with a big thanks to [Hammerjs](http://hammerjs.github.io/) :)
+- Touch friendly, mouse drag (Pointer Events)
 
 - Responsive
 
@@ -41,10 +45,13 @@ In your head section, include the css (a minified version is also provided) :
 Include the required javascript, before the body closing tag :
 
 ```html
-<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
-<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/hammer.js/2.0.8/hammer.min.js"></script>
+<script type="text/javascript" src="https://code.jquery.com/jquery-4.0.0.min.js" integrity="sha256-OaVG6prZf4v69dPg6PhVattBXkcOWQB62pdZ3ORyrao=" crossorigin="anonymous"></script>
 <script type="text/javascript" src="jquery.images-compare.min.js"></script>
 ```
+
+Note: use the full jQuery build (not the slim build). The slim build excludes the Ajax and effects modules, and this plugin relies on jQuery effects for animation.
+
+Note: jQuery 4 is the supported baseline. Older jQuery versions are not officially supported; use jQuery Migrate when upgrading from jQuery 3.x.
 
 Setup your html (minimal example) :
 
@@ -76,6 +83,24 @@ You can get the project via npm too :
 
 ```sh
 npm install jquery-images-compare
+```
+
+### Tooling (optional)
+
+This repo includes a `mise.toml` for pinning Bun. If you use `mise`, run:
+
+```sh
+mise install
+```
+
+You can also install Bun directly if you do not use `mise`.
+
+### Git Hooks (optional)
+
+To enable the pre-commit lint hook:
+
+```sh
+git config core.hooksPath .githooks
 ```
 
 ### Plugin settings
@@ -214,36 +239,53 @@ test.setValue(0, true);
 Clone the repository, then launch an :
 
 ```sh
-npm install
+bun install
 ```
 
 To lint js and css use :
 
 ```sh
-npm run lint
+bun run lint
 ```
 
 
 To build use :
 
 ```sh
-npm run build
+bun run build
 ```
 
 To test use :
 
 ```sh
-npm test
+bun run test
+bun run test:serve
 ```
 
-(You can open the file src/tests/test.html in your browser too)
+(Then open `http://localhost:41721/src/tests/test.html` in a browser.)
+
+On macOS you can also run:
+
+```sh
+bun run test:open
+```
+
+To open the example page:
+
+```sh
+bun run example:serve
+```
+
+```sh
+bun run example:open
+```
 
 *Too look available scripts look at the scripts part in the package.json file*
 
 ## Contributors
 - [@sylvaincombes](https://github.com/sylvaincombes) (Maintainer)
 - [@drenawak](https://github.com/drenawak)
-- [Céline Skowron](http://celine-skowron.fr)
+- [Céline Skowron](https://celine-skowron.fr)
 - [Iván Pérez](https://github.com/Ivan-Perez)
 
 ## Credits
@@ -251,15 +293,34 @@ npm test
 ### External libs and code
 
 #### Libraries
-- [jQuery](http://jquery.com)
-- [Hammerjs](http://hammerjs.github.io/)
+- [jQuery](https://jquery.com)
 
 #### Code snippets
-- [naturalWidth and naturalHeight polyfill](http://www.jacklmoore.com/notes/naturalwidth-and-naturalheight-in-ie/)
 - Drag Handle look and feel taken from [zurb twentytwenty](https://github.com/zurb/twentytwenty)
 
+## Browser Support
+
+This plugin uses Pointer Events for drag interactions and targets modern evergreen browsers:
+
+- Chrome 55+
+- Edge 12+
+- Firefox 59+
+- Safari 13+
+
+Older browsers (including Internet Explorer) are not supported.
+
+### jQuery 4 Support Policy
+
+Because this project uses jQuery 4, browser support follows the jQuery 4 policy:
+
+- Chrome/Edge/Firefox/Safari: current and current-1
+- Opera: current
+- iOS Safari: current, current-1, current-2
+- Android Chrome: current and current-1
+- Internet Explorer: 11 only
+
 ### Images in examples
-Images used in example are kindly provided by [Céline Skowron](http://celine-skowron.fr), all rights belong to her so you can't use them anywhere without contacting her.
+Images used in example are kindly provided by [Céline Skowron](https://celine-skowron.fr), all rights belong to her so you can't use them anywhere without contacting her.
 
 ## License
 Released under the MIT license.

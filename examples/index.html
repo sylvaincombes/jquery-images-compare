@@ -24,28 +24,28 @@
         </div>
     </div>
     <div>
-        <button class="btn js-front-btn">Show front image</button>
-        <button class="btn js-back-btn">Show back image</button>
-        <button class="btn js-toggle-btn">Toggle</button>
+        <button type="button" class="btn js-front-btn">Show front image</button>
+        <button type="button" class="btn js-back-btn">Show back image</button>
+        <button type="button" class="btn js-toggle-btn">Toggle</button>
     </div>
 
     <footer>
-        Image credits : <a href="http://celine-skowron.fr">Céline Skowron</a>
+        Image credits : <a href="https://celine-skowron.fr">Céline Skowron</a>
     </footer>
 
 </div>
 
 
-<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
-<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/hammer.js/2.0.8/hammer.min.js"></script>
+<script type="text/javascript" src="https://code.jquery.com/jquery-4.0.0.min.js" integrity="sha256-OaVG6prZf4v69dPg6PhVattBXkcOWQB62pdZ3ORyrao=" crossorigin="anonymous"></script>
 <script type="text/javascript" src="../src/assets/js/jquery.images-compare.js"></script>
+<script type="text/javascript" src="assets/js/images-compare-controls.js"></script>
 <script type="text/javascript">
-    $(function () {
+    $(() => {
         var imagesCompareElement = $('.js-img-compare').imagesCompare();
         var imagesCompare = imagesCompareElement.data('imagesCompare');
         var events = imagesCompare.events();
 
-        imagesCompare.on(events.changed, function (event) {
+        imagesCompare.on(events.changed, (event) => {
             console.log(events.changed);
             console.log(event.ratio);
             if (event.ratio < 0.4) {
@@ -63,25 +63,7 @@
                 console.log('We see completely front image');
             }
         });
-
-        $('.js-front-btn').on('click', function (event) {
-            event.preventDefault();
-            imagesCompare.setValue(1, true);
-        });
-
-        $('.js-back-btn').on('click', function (event) {
-            event.preventDefault();
-            imagesCompare.setValue(0, true);
-        });
-
-        $('.js-toggle-btn').on('click', function (event) {
-            event.preventDefault();
-            if (imagesCompare.getValue() >= 0 && imagesCompare.getValue() < 1) {
-                imagesCompare.setValue(1, true);
-            } else {
-                imagesCompare.setValue(0, true);
-            }
-        });
+        window.imagesCompareBindControls(imagesCompare);
     });
 </script>
 </body>

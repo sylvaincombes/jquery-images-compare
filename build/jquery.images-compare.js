@@ -1,471 +1,603 @@
-/** global: Hammer */
-;(function ($, window) {
-    "use strict";
+(($, window) => {
+	var pluginName = "imagesCompare",
+		defaults = {
+			initVisibleRatio: 0.5,
+			interactionMode: "drag", // "drag", "mousemove", "click"
+			animationDuration: 400, // default animation duration in ms
+			animationEasing: "swing",
+			addSeparator: true, // add a html element on the separation
+			addDragHandle: true, // add a html drag handle element on the separation
+			precision: 4,
+		};
 
-    function stringRepeat(s, precision) {
-        // String repeat polyfill
-        if (!String.prototype.repeat) {
-            precision = precision || 1;
-            return new Array(precision + 1).join(s);
-        }
-        return s.repeat(precision);
-    }
+	// Our object, using revealing module pattern
+	function ImagesCompare(element, options) {
+		element = $(element);
+		options = $.extend({}, defaults, options);
+		options.roundFactor = 10 ** options.precision;
 
-    var pluginName = 'imagesCompare',
-        defaults = {
-            initVisibleRatio: 0.5,
-            interactionMode: "drag", // "drag", "mousemove", "click"
-            animationDuration: 400, // default animation duration in ms
-            animationEasing: "swing",
-            addSeparator: true, // add a html element on the separation
-            addDragHandle: true, // add a html drag handle element on the separation
-            precision: 4
-        };
+		this._name = pluginName;
 
-    // Our object, using revealing module pattern
-    function ImagesCompare(element, options) {
-        element = $(element);
-        options = $.extend({}, defaults, options);
-        options.roundFactor = parseInt('1' + stringRepeat('0', options.precision));
+		var frontElement,
+			backElement,
+			separator,
+			dragHandle,
+			lastRatio = 1,
+			size = {
+				width: 0,
+				height: 0,
+				maxWidth: 0,
+				maxHeight: 0,
+			},
+			events = {
+				initialised: "imagesCompare:initialised",
+				changed: "imagesCompare:changed",
+				resized: "imagesCompare:resized",
+			};
 
-        this._name = pluginName;
+		function onImagesLoaded() {
+			var images = element.find("img"),
+				totalImagesCount = images.length,
+				elementsLoaded = 0;
 
-        var frontElement, backElement, separator, dragHandle, lastRatio = 1, size = {
-            width: 0,
-            height: 0,
-            maxWidth: 0,
-            maxHeight: 0
-        }, events = {
-            initialised: "imagesCompare:initialised",
-            changed: "imagesCompare:changed",
-            resized: "imagesCompare:resized"
-        };
+			if (totalImagesCount === 0) {
+				init();
+				return;
+			}
 
-        function onImagesLoaded() {
-            var images = element.find('img'),
-                totalImagesCount= images.length,
-                elementsLoaded = 0;
+			function onImageLoaded() {
+				if (elementsLoaded >= totalImagesCount) {
+					init();
+				}
+			}
 
-            function onImageLoaded(){
-                if (elementsLoaded >= totalImagesCount) {
-                    init();
-                }
-            }
+			images.each(function () {
+				// Image already loaded (cached)
+				if ($(this)[0].complete) {
+					totalImagesCount--;
+					onImageLoaded();
+				} else {
+					// Image loading / error
+					$(this).on("load", () => {
+						elementsLoaded++;
+						onImageLoaded();
+					});
+					$(this).on("error", () => {
+						elementsLoaded++;
+						onImageLoaded();
+					});
+				}
+			});
+		}
 
-            images.each(function() {
-                // Image already loaded (cached)
-                if ($(this)[0].complete) {
-                    totalImagesCount--;
-                    onImageLoaded();
-                } else {
-                    // Image loading / error
-                    $(this).on('load', function() {
-                        elementsLoaded++;
-                        onImageLoaded();
-                    });
-                    $(this).on('error', function() {
-                        elementsLoaded++;
-                        onImageLoaded();
-                    });
-                }
-            });
-        }
+		onImagesLoaded();
 
-        onImagesLoaded();
+		function init() {
+			updateDom();
+			patchSize();
+			initInteractions();
 
-        function init() {
-            updateDom();
-            patchSize();
-            initInteractions();
+			$(frontElement).attr("ratio", options.initVisibleRatio);
+			setVisibleRatio(options.initVisibleRatio);
 
-            $(frontElement).attr('ratio', options.initVisibleRatio);
-            setVisibleRatio(options.initVisibleRatio);
+			// Let the world know we have done the init
+			element.trigger({
+				type: events.initialised,
+			});
+		}
 
-            // Let the world know we have done the init
-            element.trigger({
-                type: events.initialised
-            });
-        }
+		function addResize() {
+			$(window).on("resize", (event) => {
+				frontElement.css("clip", "").css("clip-path", "");
+				patchSize();
+				setVisibleRatio(lastRatio);
 
-        function addResize() {
-            $(window).on('resize', function (event) {
-                frontElement.css('clip', '');
-                patchSize();
-                setVisibleRatio(lastRatio);
+				// Let the world know we have done some resize updates
+				element.trigger({
+					type: events.resized,
+					originalEvent: event,
+				});
+			});
+		}
 
-                // Let the world know we have done some resize updates
-                element.trigger({
-                    type: events.resized,
-                    originalEvent: event
-                });
-            });
-        }
+		function initInteractions() {
+			options.interactionMode = options.interactionMode.toLowerCase();
 
-        function initInteractions() {
-            options.interactionMode = options.interactionMode.toLowerCase();
+			if (
+				options.interactionMode !== "drag" &&
+				options.interactionMode !== "mousemove" &&
+				options.interactionMode !== "click"
+			) {
+				console.warn(
+					'No valid interactionMode found, valid values are "drag", "mousemove", "click"',
+				);
+			}
 
-            if (options.interactionMode != "drag" && options.interactionMode != "mousemove" && options.interactionMode != "click") {
-                console.warn('No valid interactionMode found, valid values are "drag", "mousemove", "click"');
-            }
+			switch (options.interactionMode) {
+				case "drag":
+					initDrag();
+					break;
+				case "mousemove":
+					initMouseMove();
+					break;
+				case "click":
+					initClick();
+					break;
+				default:
+					initDrag();
+			}
+		}
 
-            switch (options.interactionMode) {
-                case "drag":
-                    initDrag();
-                    break;
-                case "mousemove":
-                    initMouseMove();
-                    break;
-                case "click":
-                    initClick();
-                    break;
-                default:
-                    initDrag();
-            }
-        }
+		function initDrag() {
+			element.css("touch-action", "none");
+			addDrag();
+			addResize();
+		}
 
-        function initDrag() {
-            if (typeof Hammer == 'undefined') {
-                console.error('Please include the hammerjs library for drag support');
-            }
-            addDrag();
-            addResize();
-        }
+		function initMouseMove() {
+			addMouseMove();
+			addResize();
+		}
 
-        function initMouseMove() {
-            addMouseMove();
-            addResize();
-        }
+		function initClick() {
+			addClick();
+			addResize();
+		}
 
-        function initClick() {
-            addClick();
-            addResize();
-        }
+		function addClick() {
+			element.on("click", (event) => {
+				const ratio = getElementRatio(event.pageX);
+				setVisibleRatio(ratio);
+			});
+		}
 
-        function addClick() {
-            element.on('click', function (event) {
-                var ratio = getElementRatio(event.pageX);
-                setVisibleRatio(ratio);
-            });
-        }
+		function addMouseMove() {
+			let lastMove = 0;
+			const eventThrottle = 1;
+			element.on("mousemove", (event) => {
+				event.preventDefault();
+				const now = Date.now();
+				if (now > lastMove + eventThrottle) {
+					lastMove = now;
+					const ratio = getElementRatio(event.pageX);
+					setVisibleRatio(ratio);
+				}
+			});
 
-        function addMouseMove() {
-            var lastMove = 0;
-            var eventThrottle = 1;
-            element.on('mousemove', function (event) {
-                event.preventDefault();
-                var now = Date.now();
-                if (now > lastMove + eventThrottle) {
-                    lastMove = now;
-                    var ratio = getElementRatio(event.pageX);
-                    setVisibleRatio(ratio);
-                }
-            });
+			element.on("mouseout", (event) => {
+				const ratio = getElementRatio(event.pageX);
+				setVisibleRatio(ratio);
+			});
+		}
 
-            element.on('mouseout', function (event) {
-                var ratio = getElementRatio(event.pageX);
-                setVisibleRatio(ratio);
-            });
-        }
+		function addDrag() {
+			if (window.PointerEvent) {
+				addPointerDrag();
+			} else {
+				addMouseTouchDrag();
+			}
+		}
 
-        function addDrag() {
-            var hammertime = new Hammer(element[0]);
-            hammertime.get('pan').set({direction: Hammer.DIRECTION_HORIZONTAL});
-            hammertime.on('pan', function (event) {
-                var ratio = getElementRatio(event.srcEvent.pageX);
-                setVisibleRatio(ratio);
-            });
-        }
+		function addPointerDrag() {
+			var activePointerId = null;
+			var isPointerDown = false;
 
-        function updateDom() {
-            element.addClass('images-compare-container');
-            element.css('display', 'inline-block');
+			element.on("pointerdown", (event) => {
+				var rawEvent = event.originalEvent || event;
+				if (event.button !== undefined && event.button !== 0) {
+					return;
+				}
+				if (rawEvent.pointerId === undefined || rawEvent.pointerId === null) {
+					return;
+				}
+				activePointerId = rawEvent.pointerId;
+				isPointerDown = true;
 
-            frontElement = element.find('> *:nth-child(1)');
-            backElement = element.find('> *:nth-child(2)');
+				if (element[0]?.setPointerCapture) {
+					try {
+						element[0].setPointerCapture(activePointerId);
+					} catch (_error) {
+						// Ignore capture errors in browsers that don't fully support it.
+					}
+				}
 
-            frontElement.addClass("images-compare-before");
-            frontElement.css('display', 'block');
-            backElement.addClass("images-compare-after");
-            backElement.css('display', 'block');
+				var pageX = getPageX(event);
+				if (pageX === null) {
+					return;
+				}
+				var ratio = getElementRatio(pageX);
+				setVisibleRatio(ratio);
+				event.preventDefault();
+			});
 
-            if (options.addDragHandle) {
-                buildDragHandle();
-            }
+			element.on("pointermove", (event) => {
+				var rawEvent = event.originalEvent || event;
+				if (!isPointerDown || rawEvent.pointerId !== activePointerId) {
+					return;
+				}
+				var pageX = getPageX(event);
+				if (pageX === null) {
+					return;
+				}
+				var ratio = getElementRatio(pageX);
+				setVisibleRatio(ratio);
+			});
 
-            if (options.addSeparator) {
-                buildSeparator();
-            }
-        }
+			element.on("pointerup pointercancel lostpointercapture", (event) => {
+				var rawEvent = event.originalEvent || event;
+				if (rawEvent.pointerId !== activePointerId) {
+					return;
+				}
+				isPointerDown = false;
+				activePointerId = null;
+			});
+		}
 
-        function buildSeparator() {
-            element.prepend("<div class='images-compare-separator'></div>");
-            separator = element.find(".images-compare-separator");
+		function addMouseTouchDrag() {
+			var activeTouchId = null;
+			var isPointerDown = false;
 
-        }
+			element.on("mousedown", (event) => {
+				if (event.button !== undefined && event.button !== 0) {
+					return;
+				}
+				isPointerDown = true;
+				var pageX = getPageX(event);
+				if (pageX === null) {
+					return;
+				}
+				var ratio = getElementRatio(pageX);
+				setVisibleRatio(ratio);
+				event.preventDefault();
+			});
 
-        function buildDragHandle() {
-            element.prepend("<div class='images-compare-handle'></div>");
-            dragHandle = element.find(".images-compare-handle");
-            dragHandle.append("<span class='images-compare-left-arrow'></span>");
-            dragHandle.append("<span class='images-compare-right-arrow'></span>");
-        }
+			element.on("touchstart", (event) => {
+				var rawEvent = event.originalEvent || event;
+				var touch = rawEvent.touches?.[0];
+				if (!touch) {
+					return;
+				}
+				activeTouchId = touch.identifier;
+				isPointerDown = true;
+				var ratio = getElementRatio(touch.pageX);
+				setVisibleRatio(ratio);
+				event.preventDefault();
+			});
 
-        function patchSize() {
-            var imgRef = backElement.find('img').first();
-            setSize(imgRef.width(), imgRef.height(), imgRef.naturalWidth(), imgRef.naturalHeight());
-            element.css('max-width', size.maxWidth + 'px');
-            element.css('max-height', size.maxHeight + 'px');
-            frontElement.width(size.width);
-            frontElement.height(size.height);
-        }
+			$(window).on("mousemove", (event) => {
+				if (!isPointerDown) {
+					return;
+				}
+				var pageX = getPageX(event);
+				if (pageX === null) {
+					return;
+				}
+				var ratio = getElementRatio(pageX);
+				setVisibleRatio(ratio);
+			});
 
-        /**
-         *
-         * @param x
-         * @return float
-         */
-        function getElementRatio(x) {
-            return roundRatio((x - element.offset().left) / frontElement.width());
-        }
+			$(window).on("touchmove", (event) => {
+				if (!isPointerDown) {
+					return;
+				}
+				var rawEvent = event.originalEvent || event;
+				var touch = getActiveTouch(rawEvent.touches, activeTouchId);
+				if (!touch) {
+					return;
+				}
+				var ratio = getElementRatio(touch.pageX);
+				setVisibleRatio(ratio);
+				event.preventDefault();
+			});
 
-        /**
-         *
-         * @param ratio
-         * @return float
-         */
-        function roundRatio(ratio) {
-            ratio = Math.round((ratio * options.roundFactor)) / options.roundFactor;
-            if (ratio > 1) {
-                ratio = 1;
-            }
+			$(window).on("mouseup touchend touchcancel", () => {
+				isPointerDown = false;
+				activeTouchId = null;
+			});
+		}
 
-            if (ratio < 0) {
-                ratio = 0;
-            }
+		function updateDom() {
+			element.addClass("images-compare-container");
+			element.css("display", "inline-block");
 
-            return ratio;
+			frontElement = element.find("> *:nth-child(1)");
+			backElement = element.find("> *:nth-child(2)");
 
-        }
+			frontElement.addClass("images-compare-before");
+			frontElement.css("display", "block");
+			backElement.addClass("images-compare-after");
+			backElement.css("display", "block");
 
-        /**
-         * Animation request
-         *
-         * @param startValue float
-         * @param endValue float
-         * @param duration value in ms
-         * @param easing linear or swing
-         */
-        function launchAnimation(startValue, endValue, duration, easing) {
-            $(frontElement).attr('ratio', startValue).animate({ratio: startValue}, {
-                duration: 0
-            });
+			if (options.addDragHandle) {
+				buildDragHandle();
+			}
 
-            $(frontElement).stop().attr('ratio', startValue).animate({ratio: endValue}, {
-                duration: duration,
-                easing: easing,
-                step: function (now) {
-                    var width = getRatioValue(now);
-                    lastRatio = now;
-                    frontElement.attr('ratio', now).css('clip', 'rect(0, ' + width + 'px, ' + size.height + 'px, 0)');
+			if (options.addSeparator) {
+				buildSeparator();
+			}
+		}
 
-                    if (options.addSeparator) {
-                        separator.css('left', width + 'px');
-                    }
+		function buildSeparator() {
+			element.prepend("<div class='images-compare-separator'></div>");
+			separator = element.find(".images-compare-separator");
+		}
 
-                    if (options.addDragHandle) {
-                        dragHandle.css('left', width + 'px');
-                    }
-                },
-                done: function (animation, jumpedToEnd) {
-                    var ratio = $(frontElement).attr('ratio');
-                    // Let the world know something has changed
-                    element.trigger({
-                        type: events.changed,
-                        ratio: ratio,
-                        value: getRatioValue(ratio),
-                        animate: true,
-                        animation : animation,
-                        jumpedToEnd: jumpedToEnd
-                    });
-                }
-            });
-        }
+		function buildDragHandle() {
+			element.prepend("<div class='images-compare-handle'></div>");
+			dragHandle = element.find(".images-compare-handle");
+			dragHandle.append("<span class='images-compare-left-arrow'></span>");
+			dragHandle.append("<span class='images-compare-right-arrow'></span>");
+		}
 
-        /**
-         * Get value to reach, based on a ratio
-         *
-         * @param ratio float
-         * @return {number}
-         */
-        function getRatioValue(ratio) {
-            ratio = Math.round((ratio * options.roundFactor)) / options.roundFactor;
-            return Math.round(frontElement.width() * ratio);
-        }
+		function patchSize() {
+			var imgRef = backElement.find("img").first();
+			setSize(
+				imgRef.width(),
+				imgRef.height(),
+				imgRef[0]?.naturalWidth,
+				imgRef[0]?.naturalHeight,
+			);
+			element.css("max-width", `${size.maxWidth}px`);
+			element.css("max-height", `${size.maxHeight}px`);
+			frontElement.width(size.width);
+			frontElement.height(size.height);
+		}
 
-        /**
-         * Change visible ratio
-         *
-         * @param ratio float
-         * @param animate boolean Do we want an animation ?
-         * @param duration in ms
-         * @param easing 'swing', 'linear'
-         */
-        function setVisibleRatio(ratio, animate, duration, easing) {
-            if (typeof animate == 'undefined') {
-                animate = false;
-            }
+		/**
+		 *
+		 * @param x
+		 * @return float
+		 */
+		function getElementRatio(x) {
+			return roundRatio((x - element.offset().left) / frontElement.width());
+		}
 
-            var width = getRatioValue(ratio);
+		/**
+		 *
+		 * @param ratio
+		 * @return float
+		 */
+		function roundRatio(ratio) {
+			ratio = Math.round(ratio * options.roundFactor) / options.roundFactor;
+			if (ratio > 1) {
+				ratio = 1;
+			}
 
-            if (animate) {
-                var finalDuration = duration ? duration : options.animationDuration;
-                var finalEasing = easing ? easing : options.animationEasing;
+			if (ratio < 0) {
+				ratio = 0;
+			}
 
-                launchAnimation(lastRatio, ratio, finalDuration, finalEasing);
+			return ratio;
+		}
 
-                // Let the world know something has changed
-                if (lastRatio != ratio) {
-                    element.trigger({
-                        type: events.changed,
-                        ratio: lastRatio,
-                        value: width,
-                        animate: animate
-                    });
-                }
+		/**
+		 * Animation request
+		 *
+		 * @param startValue float
+		 * @param endValue float
+		 * @param duration value in ms
+		 * @param easing linear or swing
+		 */
+		function launchAnimation(startValue, endValue, duration, easing) {
+			$(frontElement).attr("ratio", startValue).animate(
+				{ ratio: startValue },
+				{
+					duration: 0,
+				},
+			);
 
-                return;
+			$(frontElement)
+				.stop()
+				.attr("ratio", startValue)
+				.animate(
+					{ ratio: endValue },
+					{
+						duration: duration,
+						easing: easing,
+						step: (now) => {
+							var width = getRatioValue(now);
+							lastRatio = now;
+							frontElement
+								.attr("ratio", now)
+								.css("clip", `rect(0, ${width}px, ${size.height}px, 0)`)
+								.css("clip-path", getClipPath(width));
 
-            } else {
-                frontElement.stop().css('clip', 'rect(0, ' + width + 'px, ' + size.height + 'px, 0)');
+							if (options.addSeparator) {
+								separator.css("left", `${width}px`);
+							}
 
-                if (options.addSeparator) {
-                    $(separator).stop().css('left', width + 'px');
-                }
+							if (options.addDragHandle) {
+								dragHandle.css("left", `${width}px`);
+							}
+						},
+						done: (animation, jumpedToEnd) => {
+							var ratio = $(frontElement).attr("ratio");
+							// Let the world know something has changed
+							element.trigger({
+								type: events.changed,
+								ratio: ratio,
+								value: getRatioValue(ratio),
+								animate: true,
+								animation: animation,
+								jumpedToEnd: jumpedToEnd,
+							});
+						},
+					},
+				);
+		}
 
-                if (options.addDragHandle) {
-                    dragHandle.css('left', width + 'px');
-                }
-            }
+		/**
+		 * Get value to reach, based on a ratio
+		 *
+		 * @param ratio float
+		 * @return {number}
+		 */
+		function getRatioValue(ratio) {
+			ratio = Math.round(ratio * options.roundFactor) / options.roundFactor;
+			return Math.round(frontElement.width() * ratio);
+		}
 
-            // Let the world know something has changed
-            if (lastRatio != ratio) {
-                element.trigger({
-                    type: events.changed,
-                    ratio: ratio,
-                    value: width,
-                    animate: animate
-                });
-            }
+		function getPageX(event) {
+			var rawEvent = event.originalEvent || event;
+			if (typeof rawEvent.pageX === "number") {
+				return rawEvent.pageX;
+			}
+			if (rawEvent.touches?.[0]) {
+				return rawEvent.touches[0].pageX;
+			}
+			if (rawEvent.changedTouches?.[0]) {
+				return rawEvent.changedTouches[0].pageX;
+			}
+			return null;
+		}
 
-            lastRatio = ratio;
-        }
+		function getActiveTouch(touches, activeTouchId) {
+			var index;
+			if (!touches || activeTouchId === null) {
+				return null;
+			}
+			for (index = 0; index < touches.length; index++) {
+				if (touches[index].identifier === activeTouchId) {
+					return touches[index];
+				}
+			}
+			return null;
+		}
 
-        function setSize(width, height, maxWidth, maxHeight) {
-            if (typeof width != 'undefined') {
-                setWidth(width);
-            }
-            if (typeof height != 'undefined') {
-                setHeight(height);
-            }
-            if (typeof maxWidth != 'undefined') {
-                setMaxWidth(maxWidth);
-            }
-            if (typeof maxHeight != 'undefined') {
-                setMaxHeight(maxHeight);
-            }
-            return size;
-        }
+		/**
+		 * Change visible ratio
+		 *
+		 * @param ratio float
+		 * @param animate boolean Do we want an animation ?
+		 * @param duration in ms
+		 * @param easing 'swing', 'linear'
+		 */
+		function setVisibleRatio(ratio, animate, duration, easing) {
+			if (typeof animate === "undefined") {
+				animate = false;
+			}
 
-        function setWidth(width) {
-            size.width = width;
-            return size;
-        }
+			const width = getRatioValue(ratio);
 
-        function setMaxWidth(maxWidth) {
-            size.maxWidth = maxWidth;
-            return size;
-        }
+			if (animate) {
+				const finalDuration = duration ? duration : options.animationDuration;
+				const finalEasing = easing ? easing : options.animationEasing;
 
-        function setHeight(height) {
-            size.height = height;
-            return size;
-        }
+				launchAnimation(lastRatio, ratio, finalDuration, finalEasing);
 
-        function setMaxHeight(maxHeight) {
-            size.maxHeight = maxHeight;
-            return size;
-        }
+				// Let the world know something has changed
+				if (lastRatio !== ratio) {
+					element.trigger({
+						type: events.changed,
+						ratio: lastRatio,
+						value: width,
+						animate: animate,
+					});
+				}
 
-        // public function declaration
-        // returning element to preserve chaining
-        return {
-            "setValue": function (ratio, animate, duration, easing) {
-                setVisibleRatio(ratio, animate, duration, easing);
-                return element;
-            },
-            "getValue": function () {
-                return lastRatio;
-            },
-            "on": function (eventName, callback) {
-                element.on(eventName, callback);
-                return element;
-            },
-            "off": function (eventName, callback) {
-                element.off(eventName, callback);
-                return element;
-            },
-            "events": function () {
-                return events;
-            }
-        };
-    }
+				return;
+			} else {
+				frontElement
+					.stop()
+					.css("clip", `rect(0, ${width}px, ${size.height}px, 0)`)
+					.css("clip-path", getClipPath(width));
 
+				if (options.addSeparator) {
+					$(separator).stop().css("left", `${width}px`);
+				}
 
-    /**
-     * Plugin declaration
-     *
-     * @param userOptions
-     * @return {*}
-     */
-    $.fn.imagesCompare = function (userOptions) {
-        var options = $.extend(defaults, userOptions);
-        return this.each(function () {
-            if (!$.data(this, pluginName)) {
-                $.data(this, pluginName, new ImagesCompare(this, options));
-            }
-        });
-    };
+				if (options.addDragHandle) {
+					dragHandle.css("left", `${width}px`);
+				}
+			}
 
+			// Let the world know something has changed
+			if (lastRatio !== ratio) {
+				element.trigger({
+					type: events.changed,
+					ratio: ratio,
+					value: width,
+					animate: animate,
+				});
+			}
+
+			lastRatio = ratio;
+		}
+
+		function getClipPath(width) {
+			var totalWidth = size.width || frontElement.width();
+			var rightInset = Math.max(0, totalWidth - width);
+			return `inset(0 ${rightInset}px 0 0)`;
+		}
+
+		function setSize(width, height, maxWidth, maxHeight) {
+			if (typeof width !== "undefined") {
+				setWidth(width);
+			}
+			if (typeof height !== "undefined") {
+				setHeight(height);
+			}
+			if (typeof maxWidth !== "undefined") {
+				setMaxWidth(maxWidth);
+			}
+			if (typeof maxHeight !== "undefined") {
+				setMaxHeight(maxHeight);
+			}
+			return size;
+		}
+
+		function setWidth(width) {
+			size.width = width;
+			return size;
+		}
+
+		function setMaxWidth(maxWidth) {
+			size.maxWidth = maxWidth;
+			return size;
+		}
+
+		function setHeight(height) {
+			size.height = height;
+			return size;
+		}
+
+		function setMaxHeight(maxHeight) {
+			size.maxHeight = maxHeight;
+			return size;
+		}
+
+		// public function declaration
+		// returning element to preserve chaining
+		return {
+			setValue: (ratio, animate, duration, easing) => {
+				setVisibleRatio(ratio, animate, duration, easing);
+				return element;
+			},
+			getValue: () => lastRatio,
+			on: (eventName, callback) => {
+				element.on(eventName, callback);
+				return element;
+			},
+			off: (eventName, callback) => {
+				element.off(eventName, callback);
+				return element;
+			},
+			events: () => events,
+		};
+	}
+
+	/**
+	 * Plugin declaration
+	 *
+	 * @param userOptions
+	 * @return {*}
+	 */
+	$.fn.imagesCompare = function (userOptions) {
+		var options = $.extend({}, defaults, userOptions);
+		return this.each(function () {
+			if (!$.data(this, pluginName)) {
+				$.data(this, pluginName, new ImagesCompare(this, options));
+			}
+		});
+	};
 })(jQuery, window, document);
-
-// http://www.jacklmoore.com/notes/naturalwidth-and-naturalheight-in-ie/
-(function ($) {
-    var props = ['Width', 'Height'], prop, propsLength;
-
-    propsLength = props.length;
-
-    for (var index = 0; index < propsLength; index++) {
-        prop = props[index];
-        /*jslint loopfunc: true */
-        (function (natural, prop) {
-            $.fn[natural] = (natural in document.createElement('img')) ?
-                function () {
-                    return this[0][natural];
-                } :
-                function () {
-                    var
-                        node = this[0],
-                        img,
-                        value = 0;
-
-                    if (node.tagName.toLowerCase() === 'img') {
-                        img = document.createElement('img');
-                        img.src = node.src;
-                        value = img[prop];
-                    }
-                    return value;
-                };
-        }('natural' + prop, prop.toLowerCase()));
-        /*jslint loopfunc: false */
-    }
-}(jQuery));
