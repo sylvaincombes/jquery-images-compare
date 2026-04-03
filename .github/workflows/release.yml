@@ -5,6 +5,10 @@ on:
     tags:
       - "v*.*.*"
 
+permissions:
+  id-token: write
+  contents: read
+
 jobs:
   publish:
     runs-on: ubuntu-latest
@@ -12,7 +16,7 @@ jobs:
       contents: write
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
       - name: Setup Bun
         uses: oven-sh/setup-bun@v2
         with:
@@ -29,8 +33,6 @@ jobs:
           cd dist
           zip -r ../jquery-images-compare-build.zip .
       - name: Publish to npm
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
         run: npm publish
       - name: GitHub Release
         uses: softprops/action-gh-release@v2
