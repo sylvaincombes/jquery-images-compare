@@ -5,15 +5,12 @@ on:
     tags:
       - "v*.*.*"
 
-permissions:
-  id-token: write
-  contents: read
-
 jobs:
   publish:
     runs-on: ubuntu-latest
     permissions:
       contents: write
+      id-token: write
     steps:
       - name: Checkout
         uses: actions/checkout@v6
@@ -33,7 +30,7 @@ jobs:
           cd dist
           zip -r ../jquery-images-compare-build.zip .
       - name: Publish to npm
-        run: npm publish
+        run: bun publish --provenance
       - name: GitHub Release
         uses: softprops/action-gh-release@v2
         with:

@@ -1,15 +1,21 @@
 {
   "name": "jquery-images-compare",
   "version": "4.0.0",
-  "description": "A jquery plugin for comparing two images",
+  "description": "jQuery plugin to compare two images with a draggable before/after slider",
   "keywords": [
     "jquery",
     "plugin",
-    "image",
+    "image-compare",
+    "image-slider",
+    "before-after",
+    "before-after-slider",
+    "slider",
     "compare",
-    "comparison",
     "before",
-    "after"
+    "after",
+    "drag",
+    "responsive",
+    "touch"
   ],
   "main": "build/jquery.images-compare.js",
   "repository": {

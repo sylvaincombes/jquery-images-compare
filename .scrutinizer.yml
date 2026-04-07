@@ -1,0 +1,5 @@
+filter:
+  excluded_paths:
+    - "build/*"
+    - "**/*.min.js"
+    - "**/*.map"

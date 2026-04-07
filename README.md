@@ -36,6 +36,32 @@ Prefer a no-dependency version? A vanilla alternative will be available as `vani
 
 ## Quick start
 
+### Via CDN
+
+The easiest way to get started — no installation required. Both [jsDelivr](https://www.jsdelivr.com/) and [unpkg](https://unpkg.com/) serve the package directly from npm.
+
+**jsDelivr:**
+
+```html
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/jquery-images-compare@4.0.0/build/images-compare.min.css">
+```
+
+```html
+<script src="https://cdn.jsdelivr.net/npm/jquery-images-compare@4.0.0/build/jquery.images-compare.min.js"></script>
+```
+
+**unpkg:**
+
+```html
+<link rel="stylesheet" href="https://unpkg.com/jquery-images-compare@4.0.0/build/images-compare.min.css">
+```
+
+```html
+<script src="https://unpkg.com/jquery-images-compare@4.0.0/build/jquery.images-compare.min.js"></script>
+```
+
+### Via local files
+
 In your head section, include the css (a minified version is also provided) :
 
 ```html
@@ -78,8 +104,6 @@ $('#myImageCompare').imagesCompare();
 ## Documentation
 
 ### Install via npm
-
-You can get the project via npm too :
 
 ```sh
 npm install jquery-images-compare
