@@ -6,15 +6,6 @@ This document is for maintainers only.
 
 This project targets jQuery 4. If the baseline changes, update `README.md` and `CHANGELOG.md` accordingly.
 
-## One-time setup
-
-1. Create an npm automation token:
-   - npmjs.com → avatar → Access Tokens → Generate New Token → Automation
-2. Add the token to GitHub:
-   - Repo → Settings → Secrets and variables → Actions → New repository secret
-   - Name: `NPM_TOKEN`
-   - Value: the token from npm
-
 ## Release steps
 
 1. Update `CHANGELOG.md`.

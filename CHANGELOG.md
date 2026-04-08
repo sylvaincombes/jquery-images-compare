@@ -8,7 +8,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 
 _Nothing at this moment_
 
-## [4.0.0] - 2026-03-25
+## [4.0.0] - 2026-04-08
 
 ### Added
 
@@ -28,10 +28,10 @@ _Nothing at this moment_
 - Clip updates now use `clip-path` with `clip` as a legacy fallback.
 - README updated to reflect new tooling, browser support, and the upcoming vanilla alternative.
 - jQuery 4 is now the supported baseline (older versions are not officially supported).
-- Dropped the IE `naturalWidth/Height` shim in favor of native properties.
 
 ### Removed
 
+- Dropped the IE `naturalWidth/Height` shim in favor of native properties.
 - Hammer.js dependency (no longer required).
 - Legacy dev tools: `jshint`, `csslint`, `node-qunit-phantomjs`, `copy-cli`, `uglify-js`, and `qunit` (unused in-browser CDN remains for tests).
 - Outdated README credits for removed polyfills.
