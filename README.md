@@ -6,7 +6,7 @@ Prefer a no-dependency version? A vanilla alternative will be available as `vani
 
 ![jquery images compare preview](https://raw.githubusercontent.com/sylvaincombes/jquery-images-compare/master/preview.gif)
 
-[![CI](https://github.com/sylvaincombes/jquery-images-compare/actions/workflows/ci.yml/badge.svg)](https://github.com/sylvaincombes/jquery-images-compare/actions/workflows/ci.yml) [![npm](https://img.shields.io/npm/v/jquery-images-compare.svg?style=flat-square)](https://www.npmjs.com/package/jquery-images-compare) [![license](https://img.shields.io/github/license/sylvaincombes/jquery-images-compare.svg?style=flat-square)](https://raw.githubusercontent.com/sylvaincombes/jquery-images-compare/master/LICENSE.md)
+[![CI](https://github.com/sylvaincombes/jquery-images-compare/actions/workflows/ci.yml/badge.svg)](https://github.com/sylvaincombes/jquery-images-compare/actions/workflows/ci.yml) [![npm](https://img.shields.io/npm/v/jquery-images-compare.svg?style=flat-square)](https://www.npmjs.com/package/jquery-images-compare) [![npm downloads](https://img.shields.io/npm/dm/jquery-images-compare.svg?style=flat-square)](https://www.npmjs.com/package/jquery-images-compare) [![license](https://img.shields.io/github/license/sylvaincombes/jquery-images-compare.svg?style=flat-square)](https://raw.githubusercontent.com/sylvaincombes/jquery-images-compare/master/LICENSE.md)
 
 ## Features
 
