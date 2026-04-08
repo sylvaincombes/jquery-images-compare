@@ -36,8 +36,18 @@ jobs:
           zip -r ../jquery-images-compare-build.zip .
       - name: Publish to npm
         run: npm publish --provenance
+      - name: Extract changelog for this version
+        id: changelog
+        run: |
+          VERSION=${GITHUB_REF_NAME#v}
+          BODY=$(awk "/^## \[${VERSION}\]/{found=1; next} found && /^## \[/{exit} found{print}" CHANGELOG.md)
+          echo "body<<EOF" >> $GITHUB_OUTPUT
+          echo "$BODY" >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
       - name: GitHub Release
-        uses: softprops/action-gh-release@v2
+        uses: softprops/action-gh-release@v2.6.1
+        env:
+          FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
         with:
-          generate_release_notes: true
+          body: ${{ steps.changelog.outputs.body }}
           files: jquery-images-compare-build.zip
