@@ -6,6 +6,9 @@ on:
     branches:
       - master
 
+permissions:
+  contents: read
+
 jobs:
   lint-build:
     runs-on: ubuntu-latest
@@ -32,3 +35,5 @@ jobs:
           fetch-depth: 0
       - name: Gitleaks
         uses: gitleaks/gitleaks-action@v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
