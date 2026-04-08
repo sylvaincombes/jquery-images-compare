@@ -18,6 +18,11 @@
     "touch"
   ],
   "main": "build/jquery.images-compare.js",
+  "files": [
+    "build/",
+    "README.md",
+    "LICENSE.md"
+  ],
   "repository": {
     "type": "git",
     "url": "git+https://github.com/sylvaincombes/jquery-images-compare.git"
